@@ -72,7 +72,7 @@ export default function App() {
             >
               About Me
             </a>
-            <ThemeToggler className="bg-transparent hover:border-primary hover:bg-primary-foreground/20" />
+            <ThemeToggler className="border-foreground bg-transparent hover:border-primary hover:bg-primary-foreground/20" />
           </div>
         </div>
       </motion.header>
