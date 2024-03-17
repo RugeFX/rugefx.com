@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import SectionHeading from "../layout/section-heading";
 
 export default function AboutSection() {
@@ -5,7 +6,18 @@ export default function AboutSection() {
     <section id="about">
       <div className="container mx-auto h-full w-full space-y-8">
         <SectionHeading title="About Me" />
-        <div className="space-y-2">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{
+            bounce: false,
+            duration: 1,
+            ease: "easeOut",
+            delay: 0.5,
+          }}
+          className="space-y-2"
+        >
           <p className="text-lg font-light leading-relaxed text-zinc-800 dark:text-zinc-300 lg:text-xl">
             My coding story started from back in my high-school days, back then
             my passion for coding ignited when I was introduced to{" "}
@@ -15,7 +27,7 @@ export default function AboutSection() {
               href="https://laravel.com"
               rel="noopener noreferrer"
               target="_blank"
-              className="font-medium underline transition-colors hover:text-primary"
+              className="font-medium text-foreground underline transition-colors hover:text-primary"
             >
               Laravel
             </a>
@@ -59,7 +71,7 @@ export default function AboutSection() {
             new skill I acquired fueled my curiosity and propelled me further
             along my coding journey, shaping me into the developer I am today.
           </p>
-        </div>
+        </motion.div>
       </div>
     </section>
   );

@@ -14,17 +14,18 @@ export default function SectionHeading({ title }: SectionHeadingProps) {
   return (
     <div className="relative flex items-center gap-8">
       <motion.h2
-        className="w-max shrink-0 cursor-grab bg-primary px-2 text-3xl font-semibold text-primary-foreground md:text-4xl "
-        initial={{ x: -100, opacity: 0 }}
+        className="w-max shrink-0 origin-bottom cursor-grab overflow-hidden bg-primary px-2 text-3xl font-semibold text-primary-foreground md:text-4xl"
+        initial={{ x: "200%", opacity: 0 }}
         whileInView={{
           x: 0,
           opacity: 1,
         }}
         viewport={{ once: true }}
         transition={{
-          bounce: false,
-          ease: "easeOut",
+          type: "spring",
+          bounce: 0.4,
           duration: 1,
+          delay: 0.2,
         }}
         drag="x"
         dragConstraints={separatorRef}
@@ -37,8 +38,8 @@ export default function SectionHeading({ title }: SectionHeadingProps) {
         initial={{ scaleX: 0 }}
         whileInView={{ scaleX: 1 }}
         viewport={{ once: true }}
-        transition={{ bounce: false, ease: "easeInOut", duration: 1.5 }}
-        className="absolute z-[-1] h-[3px] shrink origin-right bg-foreground/50"
+        transition={{ bounce: false, ease: "easeOut", duration: 1 }}
+        className="absolute z-[-1] h-[3px] shrink origin-left bg-foreground/50"
       />
     </div>
   );

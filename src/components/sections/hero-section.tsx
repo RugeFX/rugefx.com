@@ -74,7 +74,7 @@ export default function HeroSection() {
               buttonVariants({ variant: "outline" }),
               "h-10 gap-2 border-2 border-foreground px-3 text-xs sm:h-12 sm:text-sm",
             )}
-            href="https://github.com/RugeFX"
+            href="https://drive.google.com/file/d/1QNonavyjtoDYCT5y-DEqN2DLHcvlXIPi/view?usp=sharing"
             rel="noopener noreferrer"
             target="_blank"
             whileTap={{ scale: 0.9 }}
