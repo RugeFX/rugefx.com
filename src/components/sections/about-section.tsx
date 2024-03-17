@@ -38,8 +38,9 @@ export default function AboutSection() {
             </a>{" "}
             that my interest really peaked. Learning about the language and its
             powerful ecosystems and libraries like{" "}
-            <span className="font-medium text-foreground">React</span> and
-            eventually{" "}
+            <span className="font-medium text-foreground">React</span> for{" "}
+            <span className="font-medium text-foreground">front-end</span>{" "}
+            development and eventually{" "}
             <span className="font-medium text-foreground">TypeScript</span> as a
             static type checker for my projects{" "}
             <i>(because plain javascript is usually a pain)</i>, These
