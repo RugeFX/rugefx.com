@@ -8,7 +8,7 @@ export default function useActiveSectionListener(initialActive: string = "") {
 
     const handleScroll = () => {
       sections.forEach((section) => {
-        if (window.scrollY >= section.offsetTop - window.screen.height / 3) {
+        if (window.scrollY >= section.offsetTop - window.screen.height / 2) {
           setActive(section.getAttribute("id") ?? "");
         }
       });
@@ -19,5 +19,5 @@ export default function useActiveSectionListener(initialActive: string = "") {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  return [active] as const;
+  return active;
 }

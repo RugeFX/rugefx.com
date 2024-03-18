@@ -16,7 +16,7 @@ export default function App() {
       <BackgroundShine />
       {/* Main content */}
       <Header />
-      <main className="-mt-32 mb-12 grid gap-20 bg-gradient-to-b from-primary/50 to-transparent to-[25rem]">
+      <main className="-mt-32 mb-20 grid gap-20 bg-gradient-to-b from-primary/50 to-transparent to-[25rem]">
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}

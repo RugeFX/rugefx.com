@@ -2,23 +2,19 @@ import { cn } from "@/lib/utils";
 import { useWindowScroll } from "@uidotdev/usehooks";
 import { motion } from "framer-motion";
 import ThemeToggler from "../theme/theme-toggler";
-import { ReactNode, useEffect } from "react";
+import { type ReactNode } from "react";
 import useActiveSectionListener from "@/hooks/use-active-section";
+import { Button } from "../ui/button";
 
 const sections = [
-  { label: "Home", href: "hero" },
-  { label: "About Me", href: "about" },
-  { label: "Projects", href: "projects" },
+  { label: "Home", id: "hero" },
+  { label: "About Me", id: "about" },
+  { label: "Projects", id: "projects" },
 ] as const;
 
 export default function Header() {
   const [scroll] = useWindowScroll();
-  const [activeSection] = useActiveSectionListener("hero");
-
-  // TODO: remove when done dev
-  useEffect(() => {
-    console.log("active", activeSection);
-  }, [activeSection]);
+  const activeSection = useActiveSectionListener("hero");
 
   return (
     <motion.header
@@ -56,11 +52,11 @@ export default function Header() {
           RugeFX
         </motion.h2>
         <div className="hidden items-center gap-10 md:flex">
-          {sections.map(({ href, label }) => (
+          {sections.map(({ id, label }) => (
             <HeaderLink
-              key={href}
-              href={`#${href}`}
-              isActive={activeSection !== "hero" && activeSection === href}
+              key={id}
+              id={id}
+              isActive={activeSection !== "hero" && activeSection === id}
             >
               {label}
             </HeaderLink>
@@ -76,20 +72,29 @@ export default function Header() {
 }
 
 interface HeaderLinkProps {
-  href: string;
+  id: string;
   isActive?: boolean;
   children: ReactNode;
 }
 
-function HeaderLink({ href, isActive = false, children }: HeaderLinkProps) {
+function HeaderLink({ id, isActive = false, children }: HeaderLinkProps) {
+  const onClick = () => {
+    const element = document.getElementById(id);
+    element?.scrollIntoView({ behavior: "smooth", block: "center" });
+  };
+
   return (
-    <a
-      href={href}
-      className={cn("font-semibold transition-colors hover:text-primary", {
-        "text-primary": isActive,
-      })}
+    <Button
+      variant={"plain"}
+      onClick={onClick}
+      className={cn(
+        "bg-transparent p-0 font-semibold transition-colors hover:text-primary",
+        {
+          "text-primary": isActive,
+        },
+      )}
     >
       {children}
-    </a>
+    </Button>
   );
 }

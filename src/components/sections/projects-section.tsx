@@ -1,4 +1,4 @@
-import { type Variants, motion } from "framer-motion";
+import { type Variants, motion, useInView } from "framer-motion";
 import SectionHeading from "../layout/section-heading";
 import { Card, CardContent, CardFooter, CardHeader } from "../ui/card";
 import { Button } from "../ui/button";
@@ -11,11 +11,16 @@ import {
 } from "../ui/carousel";
 
 import { projects } from "@/lib/data";
+import { useRef } from "react";
 
 const MotionCarouselContent = motion(CarouselContent);
 const MotionCarouselItem = motion(CarouselItem);
+const MotionCard = motion(Card);
 
 export default function ProjectsSection() {
+  const carouselRef = useRef<HTMLElement>(null);
+  const carouselInView = useInView(carouselRef, { once: true });
+
   const carouselVariants: Variants = {
     hidden: { opacity: 0 },
     show: { opacity: 1, transition: { staggerChildren: 0.5, duration: 1 } },
@@ -24,6 +29,15 @@ export default function ProjectsSection() {
   const itemVariants: Variants = {
     hidden: { opacity: 0, x: 20 },
     show: { opacity: 1, x: 0 },
+  };
+
+  const cardVariants: Variants = {
+    hidden: { opacity: 0, y: 50 },
+    show: {
+      opacity: 1,
+      y: 0,
+      transition: { type: "spring", duration: 0.5, bounce: 0.4 },
+    },
   };
 
   return (
@@ -40,10 +54,10 @@ export default function ProjectsSection() {
         orientation="horizontal"
       >
         <MotionCarouselContent
+          ref={carouselRef}
           variants={carouselVariants}
           initial="hidden"
-          whileInView="show"
-          viewport={{ once: true }}
+          animate={carouselInView ? "show" : "hidden"}
         >
           {projects.map((details) => (
             <MotionCarouselItem
@@ -52,8 +66,24 @@ export default function ProjectsSection() {
               className="md:basis-1/2 lg:basis-1/3 xl:basis-1/4"
             >
               <div>
-                <Card className="aspect-square h-full transition-colors hover:border hover:border-primary">
-                  <CardHeader className="h-1/2 w-full overflow-hidden p-0">
+                <MotionCard
+                  initial="hidden"
+                  animate="hidden"
+                  whileInView="hidden"
+                  whileHover="show"
+                  viewport={{ once: true }}
+                  className="group aspect-square h-full transition-colors hover:border hover:border-primary"
+                >
+                  <CardHeader className="relative h-1/2 w-full space-y-0 overflow-hidden p-0">
+                    <div className="absolute grid h-full w-full place-items-center bg-background/50 opacity-0 backdrop-blur-sm backdrop-filter transition-opacity group-hover:opacity-100">
+                      <Button
+                        variants={cardVariants}
+                        size="sm"
+                        className="text-sm"
+                      >
+                        More Details
+                      </Button>
+                    </div>
                     <img
                       src={details.imageSrc}
                       alt={details.title}
@@ -77,24 +107,32 @@ export default function ProjectsSection() {
                         />
                       ))}
                     </div>
-                    <Button size="sm" className="text-sm">
-                      More Details
-                    </Button>
                   </CardFooter>
-                </Card>
+                </MotionCard>
               </div>
             </MotionCarouselItem>
           ))}
         </MotionCarouselContent>
         <CarouselPrevious
           variant="plain"
-          className="h-12 bg-background/50 bg-clip-padding ring-primary backdrop-blur-sm backdrop-filter hover:bg-primary-foreground/20 hover:ring-2"
+          className="h-12 bg-background/50 bg-clip-padding ring-primary backdrop-filter hover:bg-primary-foreground/20 hover:ring-2"
         />
         <CarouselNext
           variant="plain"
-          className="h-12 bg-background/50 bg-clip-padding ring-primary backdrop-blur-sm backdrop-filter hover:bg-primary-foreground/20 hover:ring-2"
+          className="h-12 bg-background/50 bg-clip-padding ring-primary backdrop-filter hover:bg-primary-foreground/20 hover:ring-2"
         />
       </Carousel>
+      <p className="font-light">
+        See other (mostly unfinished) projects on my{" "}
+        <a
+          href="https://github.com/RugeFX"
+          rel="noopener noreferrer"
+          target="_blank"
+          className="text-nowrap font-semibold text-foreground underline transition-colors hover:text-primary"
+        >
+          Github
+        </a>
+      </p>
     </section>
   );
 }
