@@ -35,6 +35,7 @@ const buttonVariants = cva(
 );
 
 export const buttonMotionProps: HTMLMotionProps<"button"> = {
+  initial: { scale: 1 },
   whileTap: { scale: 0.9 },
 };
 

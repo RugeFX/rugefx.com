@@ -8,6 +8,7 @@ import useActiveSectionListener from "@/hooks/use-active-section";
 const sections = [
   { label: "Home", href: "hero" },
   { label: "About Me", href: "about" },
+  { label: "Projects", href: "projects" },
 ] as const;
 
 export default function Header() {
