@@ -34,7 +34,7 @@ const buttonVariants = cva(
   },
 );
 
-export const buttonMotionProps: HTMLMotionProps<"button"> = {
+const buttonMotionProps: HTMLMotionProps<"button"> = {
   initial: { scale: 1 },
   whileTap: { scale: 0.9 },
 };
@@ -59,4 +59,4 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 );
 Button.displayName = "Button";
 
-export { Button, buttonVariants };
+export { Button, buttonVariants, buttonMotionProps };
