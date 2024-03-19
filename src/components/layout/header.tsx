@@ -51,16 +51,18 @@ export default function Header() {
         >
           RugeFX
         </motion.h2>
-        <div className="hidden items-center gap-10 md:flex">
-          {sections.map(({ id, label }) => (
-            <HeaderLink
-              key={id}
-              id={id}
-              isActive={activeSection !== "hero" && activeSection === id}
-            >
-              {label}
-            </HeaderLink>
-          ))}
+        <div className="flex items-center gap-10">
+          <div className="hidden gap-10 md:flex">
+            {sections.map(({ id, label }) => (
+              <HeaderLink
+                key={id}
+                id={id}
+                isActive={activeSection !== "hero" && activeSection === id}
+              >
+                {label}
+              </HeaderLink>
+            ))}
+          </div>
           <ThemeToggler
             variant="ghost"
             className="bg-transparent ring-0 ring-primary hover:bg-primary-foreground/20 hover:ring-2"
