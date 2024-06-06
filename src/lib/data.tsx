@@ -1,7 +1,15 @@
 import icon from "../assets/RugeFX.png";
 import forum from "../assets/RugeForum.png";
 import personalNotes from "../assets/PersonalNotesIcon.png";
-import { IconElement, Radix, React, Redux, Tailwind } from "./icons";
+import bookshelf from "../assets/BookshelfRuge.png";
+import {
+  type IconElement,
+  Radix,
+  React,
+  Redux,
+  Tailwind,
+  Javascript,
+} from "./icons";
 
 export interface Project {
   title: string;
@@ -75,6 +83,24 @@ export const projects: Project[] = [
       {
         label: "React",
         icon: React,
+      },
+      {
+        label: "Tailwind",
+        icon: Tailwind,
+      },
+    ],
+  },
+  {
+    title: "Ruge Bookshelf",
+    description:
+      "A books organizer app made for the submission of Dicoding's Front-end course. Built with HTML, Javascript, and Tailwind CSS",
+    siteUrl: "https://rugefx.github.io/ruge-bookshelf",
+    repositoryUrl: "https://github.com/RugeFX/ruge-bookshelf",
+    imageSrc: bookshelf,
+    technologies: [
+      {
+        label: "Javascript",
+        icon: Javascript,
       },
       {
         label: "Tailwind",
