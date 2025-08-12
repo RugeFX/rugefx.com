@@ -27,25 +27,28 @@ export default function Header() {
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.8, ease: "easeOut" }}
     >
-      <div className="container mx-auto flex h-20 items-center justify-between">
+      <div className="container flex justify-between items-center mx-auto h-20">
         <motion.a
           href="#hero"
-          className="font-display relative text-2xl font-bold tracking-tight"
+          className={cn(
+            "font-display relative rounded-full px-4 py-1 text-2xl font-bold tracking-tight transition-all duration-700 ease-in-out",
+            scroll.y && scroll.y > 50 ? "bg-primary" : "bg-transparent",
+          )}
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
         >
-          <span className="from-primary to-primary bg-linear-to-r via-purple-500 bg-clip-text text-transparent">
+          <span
+            className={cn(
+              "from-primary to-primary bg-linear-to-r via-purple-500 bg-clip-text transition-colors duration-700 ease-in-out",
+              scroll.y && scroll.y > 50 ? "text-white" : "text-transparent",
+            )}
+          >
             RugeFX
           </span>
-          <motion.span
-            className="bg-primary absolute -bottom-1 left-0 h-0.5 w-0"
-            whileHover={{ width: "100%" }}
-            transition={{ duration: 0.3 }}
-          />
         </motion.a>
 
-        <nav className="flex items-center gap-8">
-          <div className="hidden items-center gap-8 md:flex">
+        <nav className="flex gap-8 items-center">
+          <div className="hidden gap-8 items-center md:flex">
             {sections.map(({ id, label }) => (
               <HeaderLink
                 key={id}
@@ -59,7 +62,7 @@ export default function Header() {
 
           <ThemeToggler
             variant="ghost"
-            className="hover:bg-accent h-10 w-10 rounded-full"
+            className="w-10 h-10 rounded-full hover:bg-accent"
           />
         </nav>
       </div>

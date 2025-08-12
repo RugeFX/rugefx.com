@@ -6,50 +6,50 @@ import { FileSpreadsheetIcon, MailIcon, ArrowDownIcon } from "lucide-react";
 export default function HeroSection() {
   return (
     <section
-      className="container mx-auto flex h-full min-h-screen w-full flex-col items-center justify-center"
+      className="container flex flex-col justify-center items-center mx-auto w-full h-full min-h-screen"
       id="hero"
     >
-      <div className="relative flex flex-col items-center text-center lg:items-start lg:text-left">
+      <div className="flex relative flex-col items-center text-center lg:items-start lg:text-left">
         <motion.div
-          className="border-primary/20 bg-primary/10 text-primary mb-6 inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium backdrop-blur-xs"
+          className="inline-flex gap-2 items-center px-4 py-2 mb-6 text-sm font-medium rounded-full border border-primary/20 bg-primary/10 text-primary backdrop-blur-xs"
           initial={{ y: -20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.6, ease: "easeOut" }}
         >
-          <span className="relative flex h-2 w-2">
-            <span className="bg-primary absolute inline-flex h-full w-full animate-ping rounded-full opacity-75"></span>
-            <span className="bg-primary relative inline-flex h-2 w-2 rounded-full"></span>
+          <span className="flex relative w-2 h-2">
+            <span className="inline-flex absolute w-full h-full rounded-full opacity-75 animate-ping bg-primary"></span>
+            <span className="inline-flex relative w-2 h-2 rounded-full bg-primary"></span>
           </span>
           Available for work
         </motion.div>
 
         <motion.h1
-          className="font-display mb-6 text-5xl font-bold tracking-tight sm:text-6xl md:text-7xl lg:text-8xl"
+          className="mb-6 text-5xl font-bold tracking-tight font-display sm:text-6xl md:text-7xl lg:text-8xl"
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
         >
           Hi, I'm{" "}
-          <span className="from-primary to-primary bg-linear-to-r via-purple-500 bg-clip-text text-transparent">
+          <span className="text-transparent bg-clip-text via-purple-500 from-primary to-primary bg-linear-to-r">
             Ahmad Zacky
           </span>
         </motion.h1>
 
         <motion.p
-          className="text-muted-foreground mb-8 max-w-2xl text-lg sm:text-xl"
+          className="mb-8 max-w-2xl text-lg text-muted-foreground sm:text-xl"
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.8, ease: "easeOut", delay: 0.3 }}
         >
           A passionate{" "}
-          <span className="text-foreground font-semibold">
+          <span className="font-semibold text-foreground">
             Full-Stack Developer
           </span>{" "}
           crafting beautiful, performant web experiences with modern
           technologies
         </motion.p>
         <motion.div
-          className="mb-12 flex flex-col gap-4 sm:flex-row"
+          className="flex flex-col gap-4 mb-12 sm:flex-row"
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.8, ease: "easeOut", delay: 0.4 }}
@@ -57,7 +57,7 @@ export default function HeroSection() {
           <motion.a
             className={cn(
               buttonVariants({ size: "lg" }),
-              "group bg-primary shadow-primary/25 hover:shadow-primary/30 relative overflow-hidden rounded-full px-8 text-base font-medium shadow-lg transition-all hover:shadow-xl",
+              "group bg-primary shadow-primary/25 hover:shadow-primary/30 relative overflow-hidden px-8 text-base font-medium shadow-lg transition-all hover:shadow-xl",
             )}
             href="mailto:zackfxg@gmail.com"
             rel="noopener noreferrer"
@@ -65,17 +65,17 @@ export default function HeroSection() {
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
           >
-            <span className="relative z-10 flex items-center gap-2">
+            <span className="flex relative z-10 gap-2 items-center">
               <MailIcon className="size-5" />
               Get in touch
             </span>
-            <span className="from-primary to-primary absolute inset-0 -z-10 bg-linear-to-br via-purple-600 opacity-0 transition-opacity group-hover:opacity-100" />
+            <span className="absolute inset-0 via-purple-600 opacity-0 transition-opacity duration-300 from-primary to-primary -z-10 bg-linear-to-br group-hover:opacity-100" />
           </motion.a>
 
           <motion.a
             className={cn(
               buttonVariants({ variant: "outline", size: "lg" }),
-              "hover:bg-accent hover:border-primary rounded-full border-2 px-8 text-base font-medium transition-all",
+              "hover:bg-accent hover:border-primary border-2 px-8 text-base font-medium transition-all",
             )}
             href="https://drive.google.com/file/d/1QNonavyjtoDYCT5y-DEqN2DLHcvlXIPi/view?usp=sharing"
             rel="noopener noreferrer"
@@ -95,7 +95,7 @@ export default function HeroSection() {
           transition={{ duration: 0.8, ease: "easeOut", delay: 0.5 }}
         >
           <motion.a
-            className="group bg-accent hover:bg-primary hover:text-primary-foreground rounded-full p-3 transition-all"
+            className="p-3 rounded-full transition-colors group bg-accent hover:bg-primary hover:text-primary-foreground"
             href="https://github.com/RugeFX"
             rel="noopener noreferrer"
             target="_blank"
@@ -104,7 +104,7 @@ export default function HeroSection() {
             aria-label="Github Profile"
           >
             <svg
-              className="size-6 fill-current transition-transform group-hover:scale-110"
+              className="transition-transform fill-current size-6 group-hover:scale-110"
               role="img"
               viewBox="0 0 24 24"
               xmlns="http://www.w3.org/2000/svg"
@@ -115,7 +115,7 @@ export default function HeroSection() {
           </motion.a>
 
           <motion.a
-            className="group bg-accent hover:bg-primary hover:text-primary-foreground rounded-full p-3 transition-all"
+            className="p-3 rounded-full transition-colors group bg-accent hover:bg-primary hover:text-primary-foreground"
             href="https://linkedin.com/in/rugefx"
             rel="noopener noreferrer"
             target="_blank"
@@ -124,7 +124,7 @@ export default function HeroSection() {
             aria-label="LinkedIn Profile"
           >
             <svg
-              className="size-6 fill-current transition-transform group-hover:scale-110"
+              className="transition-transform fill-current size-6 group-hover:scale-110"
               role="img"
               viewBox="0 0 24 24"
               xmlns="http://www.w3.org/2000/svg"

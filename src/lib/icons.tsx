@@ -2,13 +2,7 @@ export type IconProps = React.HTMLAttributes<SVGElement>;
 export type IconElement = (props: IconProps) => React.JSX.Element;
 
 export const Tailwind: IconElement = (props: IconProps) => (
-  <svg
-    className="size-7 fill-foreground"
-    xmlns="http://www.w3.org/2000/svg"
-    fill="none"
-    viewBox="0 0 54 33"
-    {...props}
-  >
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 54 33" {...props}>
     <g clipPath="url(#prefix__clip0)">
       <title>Tailwind</title>
       <path

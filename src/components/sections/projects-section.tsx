@@ -1,17 +1,17 @@
 import { useMemo, useRef, useState } from "react";
-import { type Variants, motion, useInView } from "motion/react";
+import { AnimatePresence, type Variants, motion } from "motion/react";
 import { LinkIcon, Star } from "lucide-react";
 import SectionHeading from "../layout/section-heading";
-import { buttonVariants } from "../ui/button";
+import { Button, buttonVariants } from "../ui/button";
 import { Github } from "@/lib/icons";
 
 import { type Project, projects } from "@/lib/data";
 import { cn } from "@/lib/utils";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 
 export default function ProjectsSection() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const inView = useInView(containerRef, { once: true, margin: "-100px" });
-  const [activeTech, setActiveTech] = useState<string | "all">("all");
+  const [activeTech, setActiveTech] = useState<string | "All">("All");
 
   const containerVariants: Variants = {
     hidden: { opacity: 0 },
@@ -37,13 +37,13 @@ export default function ProjectsSection() {
   };
 
   const allTechnologies = useMemo(() => {
-    const labels = new Set<string>();
-    projects.forEach((p) => p.technologies.forEach((t) => labels.add(t.label)));
-    return ["all", ...Array.from(labels).sort()];
+    const labels = projects.flatMap((p) => p.technologies).map((l) => l.label);
+    return ["All", ...new Set(labels)];
   }, []);
 
   const filteredProjects = useMemo(() => {
-    if (activeTech === "all") return projects;
+    if (activeTech === "All") return projects;
+
     return projects.filter((p) =>
       p.technologies.some((t) => t.label === activeTech),
     );
@@ -58,25 +58,21 @@ export default function ProjectsSection() {
 
       {/* Tech filter pills */}
       <motion.div
-        className="flex flex-wrap items-center justify-center gap-2"
+        className="flex flex-wrap gap-2 justify-center items-center"
         initial={{ opacity: 0, y: 10 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.5 }}
       >
         {allTechnologies.map((label) => (
-          <button
+          <Button
             key={label}
-            onClick={() => setActiveTech(label as typeof activeTech)}
-            className={cn(
-              "rounded-full border px-4 py-1.5 text-sm transition-colors",
-              activeTech === label
-                ? "border-primary bg-primary text-primary-foreground"
-                : "border-border bg-accent hover:bg-accent/80",
-            )}
+            variant={activeTech === label ? "default" : "outline"}
+            onClick={() => setActiveTech(label)}
+            className="rounded-full border px-4 py-1.5 text-sm transition-colors"
           >
             {label}
-          </button>
+          </Button>
         ))}
       </motion.div>
 
@@ -84,24 +80,42 @@ export default function ProjectsSection() {
         ref={containerRef}
         variants={containerVariants}
         initial="hidden"
-        animate={inView ? "show" : "hidden"}
+        animate="show"
+        whileInView="show"
+        exit="hidden"
+        viewport={{ once: true, margin: "-100px" }}
         className={cn(
           "grid gap-8",
           featuredProject ? "lg:grid-cols-3" : "md:grid-cols-2 lg:grid-cols-3",
         )}
       >
-        {featuredProject && (
-          <motion.div variants={itemVariants} className="lg:col-span-3">
-            <FeaturedProjectCard project={featuredProject} />
-          </motion.div>
-        )}
-        {otherProjects.map((project) => (
-          <motion.div key={project.title} variants={itemVariants}>
-            <ProjectCard project={project} />
-          </motion.div>
-        ))}
+        <AnimatePresence mode="popLayout">
+          {featuredProject && (
+            <motion.div
+              key={featuredProject.title}
+              variants={itemVariants}
+              className="lg:col-span-3"
+              initial="hidden"
+              animate="show"
+              exit="hidden"
+            >
+              <FeaturedProjectCard project={featuredProject} />
+            </motion.div>
+          )}
+          {otherProjects.map((project) => (
+            <motion.div
+              key={project.title}
+              variants={itemVariants}
+              initial="hidden"
+              animate="show"
+              exit="hidden"
+            >
+              <ProjectCard project={project} />
+            </motion.div>
+          ))}
+        </AnimatePresence>
         {!featuredProject && filteredProjects.length === 0 && (
-          <div className="text-muted-foreground col-span-full text-center">
+          <div className="col-span-full text-center text-muted-foreground">
             No projects match this filter.
           </div>
         )}
@@ -120,7 +134,7 @@ export default function ProjectsSection() {
             href="https://github.com/RugeFX"
             rel="noopener noreferrer"
             target="_blank"
-            className="text-primary font-medium underline-offset-4 hover:underline"
+            className="font-medium text-primary underline-offset-4 hover:underline"
           >
             my GitHub
           </a>
@@ -137,19 +151,19 @@ interface ProjectCardProps {
 function ProjectCard({ project }: ProjectCardProps) {
   return (
     <motion.div
-      className="group bg-card relative h-full overflow-hidden rounded-2xl shadow-xs transition-all hover:shadow-xl"
+      className="overflow-hidden relative h-full rounded-2xl group bg-card shadow-xs hover:shadow-xl"
       whileHover={{ y: -5 }}
-      transition={{ duration: 0.3 }}
+      transition={{ duration: 0.3, ease: "easeOut", type: "tween" }}
     >
-      <div className="relative aspect-video overflow-hidden">
+      <div className="overflow-hidden relative aspect-video">
         <img
           src={project.imageSrc}
           alt={project.title}
-          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+          className="object-cover w-full h-full transition-transform duration-500 group-hover:scale-110"
         />
-        <div className="from-background/80 via-background/20 absolute inset-0 bg-linear-to-t to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+        <div className="absolute inset-0 to-transparent opacity-0 transition-opacity duration-300 from-background/80 via-background/20 bg-linear-to-t group-hover:opacity-100" />
 
-        <div className="absolute right-4 bottom-4 left-4 flex translate-y-4 gap-3 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
+        <div className="flex absolute right-4 bottom-4 left-4 gap-3 opacity-0 transition-all duration-300 translate-y-4 group-hover:translate-y-0 group-hover:opacity-100">
           {project.siteUrl && (
             <motion.a
               href={project.siteUrl}
@@ -163,7 +177,7 @@ function ProjectCard({ project }: ProjectCardProps) {
               whileTap={{ scale: 0.95 }}
             >
               <LinkIcon className="size-4" />
-              Live Demo
+              Live Site
             </motion.a>
           )}
           {project.repositoryUrl && (
@@ -178,7 +192,7 @@ function ProjectCard({ project }: ProjectCardProps) {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              <Github className="size-4 fill-current" />
+              <Github className="fill-current size-4" />
               Code
             </motion.a>
           )}
@@ -186,23 +200,21 @@ function ProjectCard({ project }: ProjectCardProps) {
       </div>
 
       <div className="p-6">
-        <h3 className="font-display mb-2 text-xl font-semibold">
+        <h3 className="mb-2 text-xl font-semibold font-display">
           {project.title}
         </h3>
-        <p className="text-muted-foreground mb-4 text-sm">
+        <p className="mb-4 text-sm text-muted-foreground">
           {project.description}
         </p>
 
         <div className="flex flex-wrap gap-2">
           {project.technologies.map((tech) => (
-            <div key={tech.label} className="group/tech relative">
-              <div className="bg-accent hover:bg-primary hover:text-primary-foreground flex h-8 w-8 items-center justify-center rounded-full transition-all">
-                <tech.icon className="size-4 fill-current" />
-              </div>
-              <span className="bg-foreground text-background absolute -top-8 left-1/2 -translate-x-1/2 rounded px-2 py-1 text-xs whitespace-nowrap opacity-0 transition-opacity group-hover/tech:opacity-100">
-                {tech.label}
-              </span>
-            </div>
+            <Tooltip key={tech.label}>
+              <TooltipTrigger className="flex justify-center items-center w-8 h-8 rounded-full transition-all bg-accent hover:bg-primary hover:text-primary-foreground">
+                <tech.icon className="fill-current size-4" />
+              </TooltipTrigger>
+              <TooltipContent>{tech.label}</TooltipContent>
+            </Tooltip>
           ))}
         </div>
       </div>
@@ -213,38 +225,38 @@ function ProjectCard({ project }: ProjectCardProps) {
 function FeaturedProjectCard({ project }: ProjectCardProps) {
   return (
     <motion.div
-      className="bg-card relative overflow-hidden rounded-3xl shadow-md"
+      className="overflow-hidden relative rounded-3xl shadow-md bg-card"
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.8, ease: "easeOut" }}
     >
-      <div className="relative grid gap-0 lg:grid-cols-2">
+      <div className="grid relative gap-0 lg:grid-cols-2">
         <div className="relative aspect-video lg:aspect-auto lg:min-h-[360px]">
           <img
             src={project.imageSrc}
             alt={project.title}
-            className="h-full w-full object-cover"
+            className="object-cover w-full h-full"
           />
-          <div className="from-background/70 absolute inset-0 bg-linear-to-t via-transparent to-transparent" />
-          <div className="bg-primary text-primary-foreground absolute top-4 left-4 inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-medium shadow-sm">
+          <div className="absolute inset-0 via-transparent to-transparent from-background/70 bg-linear-to-t" />
+          <div className="inline-flex absolute top-4 left-4 gap-2 items-center px-3 py-1 text-xs font-medium rounded-full shadow-sm bg-primary text-primary-foreground">
             <Star className="size-3.5" /> Featured
           </div>
         </div>
         <div className="p-6 sm:p-8 lg:p-10">
-          <h3 className="font-display mb-3 text-2xl font-semibold sm:text-3xl">
+          <h3 className="mb-3 text-2xl font-semibold font-display sm:text-3xl">
             {project.title}
           </h3>
-          <p className="text-muted-foreground mb-6 max-w-prose">
+          <p className="mb-6 max-w-prose text-muted-foreground">
             {project.description}
           </p>
-          <div className="mb-6 flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-2 mb-6">
             {project.technologies.map((tech) => (
               <span
                 key={tech.label}
-                className="text-muted-foreground inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs"
+                className="inline-flex gap-2 items-center px-3 py-1 text-xs rounded-full border text-muted-foreground"
               >
-                <tech.icon className="size-3.5" />
+                <tech.icon className="fill-foreground size-3.5" />
                 {tech.label}
               </span>
             ))}
@@ -277,7 +289,7 @@ function FeaturedProjectCard({ project }: ProjectCardProps) {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
-                <Github className="size-4 fill-current" /> Code
+                <Github className="fill-current size-4" /> Code
               </motion.a>
             )}
           </div>
