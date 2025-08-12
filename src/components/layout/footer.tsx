@@ -9,16 +9,16 @@ export default function Footer() {
   };
 
   return (
-    <footer className="relative mt-32 overflow-hidden">
-      <div className="from-primary/5 absolute inset-0 bg-linear-to-t to-transparent" />
+    <footer className="overflow-hidden relative mt-32">
+      <div className="absolute inset-0 to-transparent from-primary/5 bg-linear-to-t" />
 
-      <div className="relative container mx-auto px-6 py-12">
+      <div className="container relative px-6 py-12 mx-auto">
         <motion.div
           initial={{ y: 20, opacity: 0 }}
           whileInView={{ y: 0, opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8, ease: "easeOut" }}
-          className="flex flex-col items-center gap-8"
+          className="flex flex-col gap-8 items-center"
         >
           <div className="flex gap-4">
             <motion.a
@@ -27,16 +27,20 @@ export default function Footer() {
               whileInView="animate"
               viewport={{ once: true }}
               transition={{ delay: 0.1 }}
-              className="group bg-accent hover:bg-primary hover:text-primary-foreground rounded-full p-3 transition-all"
+              className="p-3 rounded-full transition-colors group bg-accent hover:bg-primary hover:text-primary-foreground"
               href="https://linkedin.com/in/rugefx"
               rel="noopener noreferrer"
               target="_blank"
-              whileHover={{ scale: 1.1, rotate: 5 }}
+              whileHover={{
+                scale: 1.1,
+                rotate: 5,
+                transition: { duration: 0.3, ease: "easeOut", type: "tween" },
+              }}
               whileTap={{ scale: 0.95 }}
               aria-label="LinkedIn Profile"
             >
               <svg
-                className="size-5 fill-current"
+                className="fill-current size-5"
                 role="img"
                 viewBox="0 0 24 24"
                 xmlns="http://www.w3.org/2000/svg"
@@ -52,16 +56,20 @@ export default function Footer() {
               whileInView="animate"
               viewport={{ once: true }}
               transition={{ delay: 0.2 }}
-              className="group bg-accent hover:bg-primary hover:text-primary-foreground rounded-full p-3 transition-all"
+              className="p-3 rounded-full transition-colors group bg-accent hover:bg-primary hover:text-primary-foreground"
               href="https://github.com/RugeFX"
               rel="noopener noreferrer"
               target="_blank"
-              whileHover={{ scale: 1.1, rotate: -5 }}
+              whileHover={{
+                scale: 1.1,
+                rotate: -5,
+                transition: { duration: 0.3, ease: "easeOut", type: "tween" },
+              }}
               whileTap={{ scale: 0.95 }}
               aria-label="Github Profile"
             >
               <svg
-                className="size-5 fill-current"
+                className="fill-current size-5"
                 role="img"
                 viewBox="0 0 24 24"
                 xmlns="http://www.w3.org/2000/svg"
@@ -77,16 +85,20 @@ export default function Footer() {
               whileInView="animate"
               viewport={{ once: true }}
               transition={{ delay: 0.3 }}
-              className="group bg-accent hover:bg-primary hover:text-primary-foreground rounded-full p-3 transition-all"
+              className="p-3 rounded-full transition-colors group bg-accent hover:bg-primary hover:text-primary-foreground"
               href="https://twitter.com/RugeDev"
               rel="noopener noreferrer"
               target="_blank"
-              whileHover={{ scale: 1.1, rotate: 5 }}
+              whileHover={{
+                scale: 1.1,
+                rotate: 5,
+                transition: { duration: 0.3, ease: "easeOut", type: "tween" },
+              }}
               whileTap={{ scale: 0.95 }}
               aria-label="Twitter/X Profile"
             >
               <svg
-                className="size-5 fill-current"
+                className="fill-current size-5"
                 role="img"
                 viewBox="0 0 24 24"
                 xmlns="http://www.w3.org/2000/svg"
@@ -102,7 +114,7 @@ export default function Footer() {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             transition={{ delay: 0.5, duration: 0.8 }}
-            className="text-muted-foreground text-center text-sm"
+            className="text-sm text-center text-muted-foreground"
           >
             <p>© {currentYear} Ahmad Zacky. All rights reserved.</p>
             <p className="mt-1">

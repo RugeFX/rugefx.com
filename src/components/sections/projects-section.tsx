@@ -3,11 +3,11 @@ import { AnimatePresence, type Variants, motion } from "motion/react";
 import { LinkIcon, Star } from "lucide-react";
 import SectionHeading from "../layout/section-heading";
 import { Button, buttonVariants } from "../ui/button";
-import { Github } from "@/lib/icons";
 
 import { type Project, projects } from "@/lib/data";
 import { cn } from "@/lib/utils";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
+import { SiGithub } from "@icons-pack/react-simple-icons";
 
 export default function ProjectsSection() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -49,7 +49,11 @@ export default function ProjectsSection() {
     );
   }, [activeTech]);
 
-  const featuredProject = filteredProjects.find((p) => p.featured);
+  const featuredProject =
+    activeTech === "All"
+      ? filteredProjects[0]
+      : filteredProjects.find((p) => p.featured?.includes(activeTech));
+
   const otherProjects = filteredProjects.filter((p) => p !== featuredProject);
 
   return (
@@ -192,7 +196,7 @@ function ProjectCard({ project }: ProjectCardProps) {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              <Github className="fill-current size-4" />
+              <SiGithub className="fill-current size-4" />
               Code
             </motion.a>
           )}
@@ -274,7 +278,7 @@ function FeaturedProjectCard({ project }: ProjectCardProps) {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
-                <LinkIcon className="size-4" /> Live Demo
+                <LinkIcon className="size-4" /> Live Site
               </motion.a>
             )}
             {project.repositoryUrl && (
@@ -289,7 +293,7 @@ function FeaturedProjectCard({ project }: ProjectCardProps) {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
-                <Github className="fill-current size-4" /> Code
+                <SiGithub className="fill-current size-4" /> Code
               </motion.a>
             )}
           </div>
