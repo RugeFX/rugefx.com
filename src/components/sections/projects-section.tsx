@@ -88,17 +88,14 @@ export default function ProjectsSection() {
         whileInView="show"
         exit="hidden"
         viewport={{ once: true, margin: "-100px" }}
-        className={cn(
-          "grid gap-8",
-          featuredProject ? "lg:grid-cols-3" : "md:grid-cols-2 lg:grid-cols-3",
-        )}
+        className={cn("grid gap-8 md:grid-cols-2 lg:grid-cols-3")}
       >
         <AnimatePresence mode="popLayout">
           {featuredProject && (
             <motion.div
               key={featuredProject.title}
               variants={itemVariants}
-              className="lg:col-span-3"
+              className="md:col-span-2 lg:col-span-3"
               initial="hidden"
               animate="show"
               exit="hidden"

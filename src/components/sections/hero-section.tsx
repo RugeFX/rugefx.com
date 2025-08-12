@@ -6,7 +6,7 @@ import { FileSpreadsheetIcon, MailIcon, ArrowDownIcon } from "lucide-react";
 export default function HeroSection() {
   return (
     <section
-      className="container flex flex-col justify-center items-center mx-auto w-full h-full min-h-screen"
+      className="container mx-auto flex h-screen min-h-[768px] w-full flex-col items-center justify-center"
       id="hero"
     >
       <div className="flex relative flex-col items-center text-center lg:items-start lg:text-left">
@@ -77,7 +77,7 @@ export default function HeroSection() {
               buttonVariants({ variant: "outline", size: "lg" }),
               "hover:bg-accent hover:border-primary border-2 px-8 text-base font-medium transition-all",
             )}
-            href="https://drive.google.com/file/d/1QNonavyjtoDYCT5y-DEqN2DLHcvlXIPi/view?usp=sharing"
+            href="https://docs.google.com/document/d/1Fh4tgO5LSXGCdzDGPtST5pniM-a08Ar-O8dW1SvMmDY/edit?usp=sharing"
             rel="noopener noreferrer"
             target="_blank"
             whileHover={{ scale: 1.02 }}

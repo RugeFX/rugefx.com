@@ -29,6 +29,50 @@ export interface Project {
   featured?: string[];
 }
 
+export interface WorkExperience {
+  company: string;
+  position: string;
+  duration: string;
+  location: string;
+  description: string[];
+  technologies?: string[];
+}
+
+export const workExperiences: WorkExperience[] = [
+  {
+    company: "Sattu.id",
+    position: "Software Engineer Intern",
+    duration: "Jan 2025 - Feb 2025",
+    location: "Bandung, Indonesia",
+    description: [
+      "Developed a landing page redesign for Sattu.id, using Next.js, React, Tailwind CSS, shadcn/ui, and Framer Motion",
+      "Implemented a responsive design that works on both desktop and mobile devices",
+      "Created a smooth animation for the landing page using Framer Motion",
+      "Optimized the website for better performance and SEO",
+      "Also worked on migrating the application's superadmin panel from their internal system to Retool",
+    ],
+    technologies: [
+      "React",
+      "TypeScript",
+      "Next.js",
+      "Tailwind CSS",
+      "Redux Toolkit",
+    ],
+  },
+  {
+    company: "Medika Propertindo Immalayos",
+    position: "IT Specialist",
+    duration: "May 2022 - Oct 2022",
+    location: "Jakarta, Indonesia",
+    description: [
+      "Updated a WordPress-based website by refreshing theme colors, updating images and content, tidying page layouts, and adding new attributes",
+      "Embedded the company's Instagram feed directly into the site",
+      "Shot and edited videos for business needs, including a cafe menu video and short promotional clips for the company's social media",
+    ],
+    technologies: ["WordPress", "PHP", "HTML", "CSS", "Adobe After Effects"],
+  },
+];
+
 export const projects: Project[] = [
   {
     title: "Sattu.id Landing Page",
@@ -62,7 +106,7 @@ export const projects: Project[] = [
     description:
       "A landing page for the student government association of Cakrawala University, made by the Research and Technology team. Built with Typescript, React, Tailwind CSS, shadcn/ui, and Vite",
     imageSrc: sga,
-    siteUrl: "https://sga.cakrawala.id",
+    siteUrl: "https://sga-cakrawala.org",
     repositoryUrl: "https://github.com/Ristek-CU/sga-landing-page",
     featured: ["React", "Tailwind", "Shadcn/ui"],
     technologies: [

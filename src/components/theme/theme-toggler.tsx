@@ -9,8 +9,8 @@ interface ThemeTogglerProps {
   className?: string;
 }
 
-const MotionSun = motion(Sun);
-const MotionMoon = motion(Moon);
+const MotionSun = motion.create(Sun);
+const MotionMoon = motion.create(Moon);
 
 export default function ThemeToggler({
   variant = "outline",

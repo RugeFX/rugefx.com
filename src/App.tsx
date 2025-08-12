@@ -3,6 +3,7 @@ import { motion } from "motion/react";
 import Header from "./components/layout/header";
 import HeroSection from "./components/sections/hero-section";
 import AboutSection from "./components/sections/about-section";
+import WorkExperienceSection from "./components/sections/work-experience-section";
 import ProjectsSection from "./components/sections/projects-section";
 import Footer from "./components/layout/footer";
 import TopProgressBar from "./components/layout/top-progress-bar";
@@ -29,6 +30,7 @@ export default function App() {
           <HeroSection />
           <div className="space-y-32 py-32">
             <AboutSection />
+            <WorkExperienceSection />
             <ProjectsSection />
           </div>
         </main>
