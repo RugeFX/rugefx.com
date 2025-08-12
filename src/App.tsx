@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 
 import Header from "./components/layout/header";
 import HeroSection from "./components/sections/hero-section";
@@ -18,13 +18,13 @@ export default function App() {
           animate={{ opacity: 0.4 }}
           transition={{ duration: 2 }}
         >
-          <div className="absolute -left-[10%] top-[20%] h-[40rem] w-[40rem] rounded-full bg-primary/20 blur-[120px]" />
-          <div className="absolute -right-[10%] top-[60%] h-[35rem] w-[35rem] rounded-full bg-purple-500/20 blur-[120px]" />
-          <div className="absolute left-[50%] top-[10%] h-[30rem] w-[30rem] rounded-full bg-primary/10 blur-[100px]" />
+          <div className="bg-primary/20 absolute top-[20%] -left-[10%] h-160 w-160 rounded-full blur-[120px]" />
+          <div className="absolute top-[60%] -right-[10%] h-140 w-140 rounded-full bg-purple-500/20 blur-[120px]" />
+          <div className="bg-primary/10 absolute top-[10%] left-[50%] h-120 w-120 rounded-full blur-[100px]" />
         </motion.div>
-        
+
         <Header />
-        
+
         <main className="relative z-10">
           <HeroSection />
           <div className="space-y-32 py-32">
@@ -32,7 +32,7 @@ export default function App() {
             <ProjectsSection />
           </div>
         </main>
-        
+
         <Footer />
       </div>
     </>

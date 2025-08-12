@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "../ui/button";
 import { FileSpreadsheetIcon, MailIcon, ArrowDownIcon } from "lucide-react";
@@ -11,37 +11,42 @@ export default function HeroSection() {
     >
       <div className="relative flex flex-col items-center text-center lg:items-start lg:text-left">
         <motion.div
-          className="mb-6 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-4 py-2 text-sm font-medium text-primary backdrop-blur-sm"
+          className="border-primary/20 bg-primary/10 text-primary mb-6 inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium backdrop-blur-xs"
           initial={{ y: -20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.6, ease: "easeOut" }}
         >
           <span className="relative flex h-2 w-2">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75"></span>
-            <span className="relative inline-flex h-2 w-2 rounded-full bg-primary"></span>
+            <span className="bg-primary absolute inline-flex h-full w-full animate-ping rounded-full opacity-75"></span>
+            <span className="bg-primary relative inline-flex h-2 w-2 rounded-full"></span>
           </span>
           Available for work
         </motion.div>
-        
+
         <motion.h1
-          className="mb-6 font-display text-5xl font-bold tracking-tight sm:text-6xl md:text-7xl lg:text-8xl"
+          className="font-display mb-6 text-5xl font-bold tracking-tight sm:text-6xl md:text-7xl lg:text-8xl"
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
         >
           Hi, I'm{" "}
-          <span className="bg-gradient-to-r from-primary via-purple-500 to-primary bg-clip-text text-transparent">
+          <span className="from-primary to-primary bg-linear-to-r via-purple-500 bg-clip-text text-transparent">
             Ahmad Zacky
           </span>
         </motion.h1>
-        
+
         <motion.p
-          className="mb-8 max-w-2xl text-lg text-muted-foreground sm:text-xl"
+          className="text-muted-foreground mb-8 max-w-2xl text-lg sm:text-xl"
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.8, ease: "easeOut", delay: 0.3 }}
         >
-          A passionate <span className="font-semibold text-foreground">Full-Stack Developer</span> crafting beautiful, performant web experiences with modern technologies
+          A passionate{" "}
+          <span className="text-foreground font-semibold">
+            Full-Stack Developer
+          </span>{" "}
+          crafting beautiful, performant web experiences with modern
+          technologies
         </motion.p>
         <motion.div
           className="mb-12 flex flex-col gap-4 sm:flex-row"
@@ -52,7 +57,7 @@ export default function HeroSection() {
           <motion.a
             className={cn(
               buttonVariants({ size: "lg" }),
-              "group relative overflow-hidden rounded-full bg-primary px-8 text-base font-medium shadow-lg shadow-primary/25 transition-all hover:shadow-xl hover:shadow-primary/30"
+              "group bg-primary shadow-primary/25 hover:shadow-primary/30 relative overflow-hidden rounded-full px-8 text-base font-medium shadow-lg transition-all hover:shadow-xl",
             )}
             href="mailto:zackfxg@gmail.com"
             rel="noopener noreferrer"
@@ -64,13 +69,13 @@ export default function HeroSection() {
               <MailIcon className="size-5" />
               Get in touch
             </span>
-            <span className="absolute inset-0 -z-10 bg-gradient-to-br from-primary via-purple-600 to-primary opacity-0 transition-opacity group-hover:opacity-100" />
+            <span className="from-primary to-primary absolute inset-0 -z-10 bg-linear-to-br via-purple-600 opacity-0 transition-opacity group-hover:opacity-100" />
           </motion.a>
-          
+
           <motion.a
             className={cn(
               buttonVariants({ variant: "outline", size: "lg" }),
-              "rounded-full border-2 px-8 text-base font-medium transition-all hover:bg-accent hover:border-primary"
+              "hover:bg-accent hover:border-primary rounded-full border-2 px-8 text-base font-medium transition-all",
             )}
             href="https://drive.google.com/file/d/1QNonavyjtoDYCT5y-DEqN2DLHcvlXIPi/view?usp=sharing"
             rel="noopener noreferrer"
@@ -82,7 +87,7 @@ export default function HeroSection() {
             View Resume
           </motion.a>
         </motion.div>
-        
+
         <motion.div
           className="flex gap-4"
           initial={{ y: 20, opacity: 0 }}
@@ -90,7 +95,7 @@ export default function HeroSection() {
           transition={{ duration: 0.8, ease: "easeOut", delay: 0.5 }}
         >
           <motion.a
-            className="group rounded-full bg-accent p-3 transition-all hover:bg-primary hover:text-primary-foreground"
+            className="group bg-accent hover:bg-primary hover:text-primary-foreground rounded-full p-3 transition-all"
             href="https://github.com/RugeFX"
             rel="noopener noreferrer"
             target="_blank"
@@ -108,9 +113,9 @@ export default function HeroSection() {
               <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12" />
             </svg>
           </motion.a>
-          
+
           <motion.a
-            className="group rounded-full bg-accent p-3 transition-all hover:bg-primary hover:text-primary-foreground"
+            className="group bg-accent hover:bg-primary hover:text-primary-foreground rounded-full p-3 transition-all"
             href="https://linkedin.com/in/rugefx"
             rel="noopener noreferrer"
             target="_blank"
@@ -130,7 +135,7 @@ export default function HeroSection() {
           </motion.a>
         </motion.div>
       </div>
-      
+
       <motion.div
         className="absolute bottom-8 left-1/2 -translate-x-1/2"
         initial={{ y: -10, opacity: 0 }}

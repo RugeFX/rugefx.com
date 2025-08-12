@@ -1,5 +1,5 @@
 import { useMemo, useRef, useState } from "react";
-import { type Variants, motion, useInView } from "framer-motion";
+import { type Variants, motion, useInView } from "motion/react";
 import { LinkIcon, Star } from "lucide-react";
 import SectionHeading from "../layout/section-heading";
 import { buttonVariants } from "../ui/button";
@@ -15,24 +15,24 @@ export default function ProjectsSection() {
 
   const containerVariants: Variants = {
     hidden: { opacity: 0 },
-    show: { 
-      opacity: 1, 
-      transition: { 
+    show: {
+      opacity: 1,
+      transition: {
         staggerChildren: 0.1,
-        delayChildren: 0.3
-      } 
+        delayChildren: 0.3,
+      },
     },
   };
 
   const itemVariants: Variants = {
     hidden: { y: 20, opacity: 0 },
-    show: { 
-      y: 0, 
+    show: {
+      y: 0,
       opacity: 1,
       transition: {
         duration: 0.8,
-        ease: "easeOut"
-      }
+        ease: "easeOut",
+      },
     },
   };
 
@@ -44,7 +44,9 @@ export default function ProjectsSection() {
 
   const filteredProjects = useMemo(() => {
     if (activeTech === "all") return projects;
-    return projects.filter((p) => p.technologies.some((t) => t.label === activeTech));
+    return projects.filter((p) =>
+      p.technologies.some((t) => t.label === activeTech),
+    );
   }, [activeTech]);
 
   const featuredProject = filteredProjects.find((p) => p.featured);
@@ -70,7 +72,7 @@ export default function ProjectsSection() {
               "rounded-full border px-4 py-1.5 text-sm transition-colors",
               activeTech === label
                 ? "border-primary bg-primary text-primary-foreground"
-                : "border-border bg-accent hover:bg-accent/80"
+                : "border-border bg-accent hover:bg-accent/80",
             )}
           >
             {label}
@@ -85,7 +87,7 @@ export default function ProjectsSection() {
         animate={inView ? "show" : "hidden"}
         className={cn(
           "grid gap-8",
-          featuredProject ? "lg:grid-cols-3" : "md:grid-cols-2 lg:grid-cols-3"
+          featuredProject ? "lg:grid-cols-3" : "md:grid-cols-2 lg:grid-cols-3",
         )}
       >
         {featuredProject && (
@@ -99,7 +101,7 @@ export default function ProjectsSection() {
           </motion.div>
         ))}
         {!featuredProject && filteredProjects.length === 0 && (
-          <div className="col-span-full text-center text-muted-foreground">
+          <div className="text-muted-foreground col-span-full text-center">
             No projects match this filter.
           </div>
         )}
@@ -118,7 +120,7 @@ export default function ProjectsSection() {
             href="https://github.com/RugeFX"
             rel="noopener noreferrer"
             target="_blank"
-            className="font-medium text-primary underline-offset-4 hover:underline"
+            className="text-primary font-medium underline-offset-4 hover:underline"
           >
             my GitHub
           </a>
@@ -135,7 +137,7 @@ interface ProjectCardProps {
 function ProjectCard({ project }: ProjectCardProps) {
   return (
     <motion.div
-      className="group relative h-full overflow-hidden rounded-2xl bg-card shadow-sm transition-all hover:shadow-xl"
+      className="group bg-card relative h-full overflow-hidden rounded-2xl shadow-xs transition-all hover:shadow-xl"
       whileHover={{ y: -5 }}
       transition={{ duration: 0.3 }}
     >
@@ -145,9 +147,9 @@ function ProjectCard({ project }: ProjectCardProps) {
           alt={project.title}
           className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-background/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-        
-        <div className="absolute bottom-4 left-4 right-4 flex gap-3 opacity-0 transition-all duration-300 group-hover:opacity-100 group-hover:translate-y-0 translate-y-4">
+        <div className="from-background/80 via-background/20 absolute inset-0 bg-linear-to-t to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+
+        <div className="absolute right-4 bottom-4 left-4 flex translate-y-4 gap-3 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
           {project.siteUrl && (
             <motion.a
               href={project.siteUrl}
@@ -155,7 +157,7 @@ function ProjectCard({ project }: ProjectCardProps) {
               target="_blank"
               className={cn(
                 buttonVariants({ size: "sm" }),
-                "gap-2 rounded-full bg-primary/90 backdrop-blur-sm hover:bg-primary"
+                "bg-primary/90 hover:bg-primary gap-2 rounded-full backdrop-blur-xs",
               )}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
@@ -171,7 +173,7 @@ function ProjectCard({ project }: ProjectCardProps) {
               target="_blank"
               className={cn(
                 buttonVariants({ variant: "outline", size: "sm" }),
-                "gap-2 rounded-full border-background/50 bg-background/20 backdrop-blur-sm hover:bg-background/30"
+                "border-background/50 bg-background/20 hover:bg-background/30 gap-2 rounded-full backdrop-blur-xs",
               )}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
@@ -182,25 +184,22 @@ function ProjectCard({ project }: ProjectCardProps) {
           )}
         </div>
       </div>
-      
+
       <div className="p-6">
-        <h3 className="mb-2 font-display text-xl font-semibold">
+        <h3 className="font-display mb-2 text-xl font-semibold">
           {project.title}
         </h3>
-        <p className="mb-4 text-sm text-muted-foreground">
+        <p className="text-muted-foreground mb-4 text-sm">
           {project.description}
         </p>
-        
+
         <div className="flex flex-wrap gap-2">
           {project.technologies.map((tech) => (
-            <div
-              key={tech.label}
-              className="group/tech relative"
-            >
-              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-accent transition-all hover:bg-primary hover:text-primary-foreground">
+            <div key={tech.label} className="group/tech relative">
+              <div className="bg-accent hover:bg-primary hover:text-primary-foreground flex h-8 w-8 items-center justify-center rounded-full transition-all">
                 <tech.icon className="size-4 fill-current" />
               </div>
-              <span className="absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded bg-foreground px-2 py-1 text-xs text-background opacity-0 transition-opacity group-hover/tech:opacity-100">
+              <span className="bg-foreground text-background absolute -top-8 left-1/2 -translate-x-1/2 rounded px-2 py-1 text-xs whitespace-nowrap opacity-0 transition-opacity group-hover/tech:opacity-100">
                 {tech.label}
               </span>
             </div>
@@ -214,7 +213,7 @@ function ProjectCard({ project }: ProjectCardProps) {
 function FeaturedProjectCard({ project }: ProjectCardProps) {
   return (
     <motion.div
-      className="relative overflow-hidden rounded-3xl bg-card shadow-md"
+      className="bg-card relative overflow-hidden rounded-3xl shadow-md"
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
@@ -227,23 +226,23 @@ function FeaturedProjectCard({ project }: ProjectCardProps) {
             alt={project.title}
             className="h-full w-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-background/70 via-transparent to-transparent" />
-          <div className="absolute left-4 top-4 inline-flex items-center gap-2 rounded-full bg-primary px-3 py-1 text-xs font-medium text-primary-foreground shadow">
+          <div className="from-background/70 absolute inset-0 bg-linear-to-t via-transparent to-transparent" />
+          <div className="bg-primary text-primary-foreground absolute top-4 left-4 inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-medium shadow-sm">
             <Star className="size-3.5" /> Featured
           </div>
         </div>
         <div className="p-6 sm:p-8 lg:p-10">
-          <h3 className="mb-3 font-display text-2xl font-semibold sm:text-3xl">
+          <h3 className="font-display mb-3 text-2xl font-semibold sm:text-3xl">
             {project.title}
           </h3>
-          <p className="mb-6 max-w-prose text-muted-foreground">
+          <p className="text-muted-foreground mb-6 max-w-prose">
             {project.description}
           </p>
           <div className="mb-6 flex flex-wrap gap-2">
             {project.technologies.map((tech) => (
               <span
                 key={tech.label}
-                className="inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs text-muted-foreground"
+                className="text-muted-foreground inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs"
               >
                 <tech.icon className="size-3.5" />
                 {tech.label}
@@ -258,7 +257,7 @@ function FeaturedProjectCard({ project }: ProjectCardProps) {
                 target="_blank"
                 className={cn(
                   buttonVariants({ size: "sm" }),
-                  "gap-2 rounded-full"
+                  "gap-2 rounded-full",
                 )}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
@@ -273,7 +272,7 @@ function FeaturedProjectCard({ project }: ProjectCardProps) {
                 target="_blank"
                 className={cn(
                   buttonVariants({ variant: "outline", size: "sm" }),
-                  "gap-2 rounded-full"
+                  "gap-2 rounded-full",
                 )}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}

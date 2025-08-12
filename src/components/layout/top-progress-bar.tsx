@@ -1,4 +1,4 @@
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useScroll, useTransform } from "motion/react";
 
 export default function TopProgressBar() {
   const { scrollYProgress } = useScroll();
@@ -6,7 +6,7 @@ export default function TopProgressBar() {
 
   return (
     <motion.div
-      className="fixed top-0 z-[60] h-1 w-full origin-left bg-gradient-to-r from-primary via-purple-500 to-primary shadow-lg shadow-primary/50"
+      className="from-primary to-primary shadow-primary/50 fixed top-0 z-60 h-1 w-full origin-left bg-linear-to-r via-purple-500 shadow-lg"
       style={{ scaleX: scrollYProgress, opacity }}
     />
   );

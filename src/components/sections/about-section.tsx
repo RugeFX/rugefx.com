@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import SectionHeading from "../layout/section-heading";
 
 export default function AboutSection() {
@@ -19,69 +19,68 @@ export default function AboutSection() {
           transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
           className="grid gap-6 md:grid-cols-2"
         >
-          <div className="space-y-4 rounded-2xl bg-card p-6 shadow-sm">
-            <h3 className="font-display text-2xl font-semibold text-primary">
+          <div className="bg-card space-y-4 rounded-2xl p-6 shadow-xs">
+            <h3 className="font-display text-primary text-2xl font-semibold">
               Journey Begins
             </h3>
-            <p className="leading-relaxed text-muted-foreground">
+            <p className="text-muted-foreground leading-relaxed">
               My coding story started in high school when I discovered{" "}
-              <span className="font-medium text-foreground">PHP</span> and{" "}
+              <span className="text-foreground font-medium">PHP</span> and{" "}
               <a
                 href="https://laravel.com"
                 rel="noopener noreferrer"
                 target="_blank"
-                className="font-medium text-primary underline-offset-4 hover:underline"
+                className="text-primary font-medium underline-offset-4 hover:underline"
               >
                 Laravel
               </a>
               . Building projects with{" "}
-              <span className="font-medium text-foreground">MySQL</span> laid
+              <span className="text-foreground font-medium">MySQL</span> laid
               the foundation for my web development journey.
             </p>
           </div>
-          
-          <div className="space-y-4 rounded-2xl bg-card p-6 shadow-sm">
-            <h3 className="font-display text-2xl font-semibold text-primary">
+
+          <div className="bg-card space-y-4 rounded-2xl p-6 shadow-xs">
+            <h3 className="font-display text-primary text-2xl font-semibold">
               Frontend Passion
             </h3>
-            <p className="leading-relaxed text-muted-foreground">
+            <p className="text-muted-foreground leading-relaxed">
               A{" "}
               <a
                 href="https://youtube.com/playlist?list=PLFIM0718LjIWXagluzROrA-iBY9eeUt4w&si=pX6sixXlbWHTW2AC"
                 rel="noopener noreferrer"
                 target="_blank"
-                className="font-medium text-primary underline-offset-4 hover:underline"
+                className="text-primary font-medium underline-offset-4 hover:underline"
               >
                 JavaScript course
               </a>{" "}
               changed everything. I fell in love with{" "}
-              <span className="font-medium text-foreground">React</span> and{" "}
-              <span className="font-medium text-foreground">TypeScript</span>,
+              <span className="text-foreground font-medium">React</span> and{" "}
+              <span className="text-foreground font-medium">TypeScript</span>,
               discovering the power of modern frontend development.
             </p>
           </div>
         </motion.div>
-        
+
         <motion.div
           initial={{ y: 20, opacity: 0 }}
           whileInView={{ y: 0, opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8, ease: "easeOut", delay: 0.3 }}
-          className="space-y-4 rounded-2xl bg-gradient-to-br from-primary/10 via-transparent to-purple-500/10 p-6"
+          className="from-primary/10 space-y-4 rounded-2xl bg-linear-to-br via-transparent to-purple-500/10 p-6"
         >
           <h3 className="font-display text-2xl font-semibold">
             Full-Stack Evolution
           </h3>
-          <p className="leading-relaxed text-muted-foreground">
+          <p className="text-muted-foreground leading-relaxed">
             My curiosity led me to explore the backend with{" "}
-            <span className="font-medium text-foreground">Node.js</span>,{" "}
-            <span className="font-medium text-foreground">Express</span>, and{" "}
-            <span className="font-medium text-foreground">Go</span>. Working
-            with{" "}
-            <span className="font-medium text-foreground">PostgreSQL</span> and{" "}
-            <span className="font-medium text-foreground">MongoDB</span> rounded
-            out my full-stack skillset. Each new technology fuels my passion for
-            creating exceptional web experiences.
+            <span className="text-foreground font-medium">Node.js</span>,{" "}
+            <span className="text-foreground font-medium">Express</span>, and{" "}
+            <span className="text-foreground font-medium">Go</span>. Working
+            with <span className="text-foreground font-medium">PostgreSQL</span>{" "}
+            and <span className="text-foreground font-medium">MongoDB</span>{" "}
+            rounded out my full-stack skillset. Each new technology fuels my
+            passion for creating exceptional web experiences.
           </p>
         </motion.div>
       </motion.div>
