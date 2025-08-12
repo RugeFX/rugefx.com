@@ -1,49 +1,30 @@
 import { useRef } from "react";
-import { motion, useInView } from "framer-motion";
-import { Separator } from "../ui/separator";
+import { motion, useInView } from "motion/react";
 
 interface SectionHeadingProps {
   title: string;
 }
 
-const MotionSeparator = motion(Separator);
-
 export default function SectionHeading({ title }: SectionHeadingProps) {
-  const separatorRef = useRef<HTMLDivElement>(null);
-  const inView = useInView(separatorRef, { once: true });
+  const ref = useRef<HTMLHeadingElement>(null);
+  const inView = useInView(ref, { once: true, margin: "-100px" });
 
   return (
-    <div className="relative flex items-center gap-8 overflow-x-hidden">
+    <div className="relative">
       <motion.h2
-        className="w-max shrink-0 origin-bottom cursor-grab overflow-hidden bg-primary px-2 text-xl font-semibold text-primary-foreground sm:text-3xl md:text-4xl"
-        initial={{ x: "200%", opacity: 0 }}
-        animate={
-          inView && {
-            x: 0,
-            opacity: 1,
-          }
-        }
-        transition={{
-          type: "spring",
-          bounce: 0.5,
-          duration: 1,
-          delay: 0.2,
-        }}
-        drag="x"
-        dragConstraints={separatorRef}
-        dragTransition={{ bounceDamping: 9, bounceStiffness: 200 }}
-        dragMomentum={false}
-        whileDrag={{ cursor: "grabbing" }}
+        ref={ref}
+        className="font-display text-center text-4xl font-bold tracking-tight sm:text-5xl"
+        initial={{ y: 20, opacity: 0 }}
+        animate={inView ? { y: 0, opacity: 1 } : { y: 20, opacity: 0 }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
       >
-        {title}
+        <span className="text-foreground">{title}</span>
       </motion.h2>
-      <MotionSeparator
-        ref={separatorRef}
-        initial={{ scaleX: 0.1 }}
-        whileInView={{ scaleX: 1 }}
-        viewport={{ once: true }}
-        transition={{ bounce: false, ease: "easeOut", duration: 1 }}
-        className="absolute z-[-1] h-[3px] shrink origin-left bg-foreground/50"
+      <motion.div
+        className="via-primary mx-auto mt-4 h-1 w-20 bg-linear-to-r from-transparent to-transparent"
+        initial={{ scaleX: 0 }}
+        animate={inView ? { scaleX: 1 } : { scaleX: 0 }}
+        transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
       />
     </div>
   );

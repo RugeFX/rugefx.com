@@ -1,7 +1,7 @@
 import { Moon, Sun } from "lucide-react";
 import { Button, type ButtonVariantProps } from "@/components/ui/button";
 import { useTheme } from "@/contexts/theme-provider";
-import { Variants, motion } from "framer-motion";
+import { Variants, motion } from "motion/react";
 import { cn } from "@/lib/utils";
 
 interface ThemeTogglerProps {
@@ -9,8 +9,8 @@ interface ThemeTogglerProps {
   className?: string;
 }
 
-const MotionSun = motion(Sun);
-const MotionMoon = motion(Moon);
+const MotionSun = motion.create(Sun);
+const MotionMoon = motion.create(Moon);
 
 export default function ThemeToggler({
   variant = "outline",
