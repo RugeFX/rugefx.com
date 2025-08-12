@@ -21,6 +21,7 @@ export interface Project {
     label: string;
     icon: IconElement;
   }[];
+  featured?: boolean;
 }
 
 export const projects: Project[] = [
@@ -31,6 +32,7 @@ export const projects: Project[] = [
     imageSrc: icon,
     siteUrl: null,
     repositoryUrl: "https://github.com/RugeFX/rugefx.com",
+    featured: true,
     technologies: [
       {
         label: "React",

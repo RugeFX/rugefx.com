@@ -5,37 +5,36 @@ import HeroSection from "./components/sections/hero-section";
 import AboutSection from "./components/sections/about-section";
 import ProjectsSection from "./components/sections/projects-section";
 import Footer from "./components/layout/footer";
-import BackgroundShine from "./components/layout/background-shine";
 import TopProgressBar from "./components/layout/top-progress-bar";
 
 export default function App() {
   return (
     <>
-      {/* BG / Miscellaneous */}
       <TopProgressBar />
-      <BackgroundShine />
-      {/* Main content */}
-      <Header />
-      <main className="-mt-32 mb-20 grid gap-20 bg-gradient-to-b from-primary/50 to-transparent to-[25rem]">
+      <div className="relative min-h-screen overflow-hidden">
         <motion.div
+          className="pointer-events-none fixed inset-0 z-0"
           initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 2, bounce: false }}
-          className="absolute top-0 z-[-1] h-full w-full animate-pulse bg-transparent"
-          style={{
-            backgroundImage:
-              "radial-gradient(hsl(var(--primary)) 1.6500000000000001px, transparent 1.6500000000000001px), radial-gradient(hsl(var(--primary)) 1.6500000000000001px, transparent 1.6500000000000001px)",
-            backgroundSize: "66px 66px",
-            backgroundPosition: "0 0,33px 33px",
-            maskImage:
-              "linear-gradient(to top, rgba(0, 0, 0, 0) 30%, rgba(0, 0, 0, 1))",
-          }}
-        />
-        <HeroSection />
-        <AboutSection />
-        <ProjectsSection />
-      </main>
-      <Footer />
+          animate={{ opacity: 0.4 }}
+          transition={{ duration: 2 }}
+        >
+          <div className="absolute -left-[10%] top-[20%] h-[40rem] w-[40rem] rounded-full bg-primary/20 blur-[120px]" />
+          <div className="absolute -right-[10%] top-[60%] h-[35rem] w-[35rem] rounded-full bg-purple-500/20 blur-[120px]" />
+          <div className="absolute left-[50%] top-[10%] h-[30rem] w-[30rem] rounded-full bg-primary/10 blur-[100px]" />
+        </motion.div>
+        
+        <Header />
+        
+        <main className="relative z-10">
+          <HeroSection />
+          <div className="space-y-32 py-32">
+            <AboutSection />
+            <ProjectsSection />
+          </div>
+        </main>
+        
+        <Footer />
+      </div>
     </>
   );
 }

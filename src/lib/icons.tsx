@@ -1,5 +1,5 @@
 export type IconProps = React.HTMLAttributes<SVGElement>;
-export type IconElement = (props: IconProps) => JSX.Element;
+export type IconElement = (props: IconProps) => React.JSX.Element;
 
 export const Tailwind: IconElement = (props: IconProps) => (
   <svg

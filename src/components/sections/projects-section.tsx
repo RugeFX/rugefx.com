@@ -1,89 +1,129 @@
-import { useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { type Variants, motion, useInView } from "framer-motion";
-import { LinkIcon } from "lucide-react";
+import { LinkIcon, Star } from "lucide-react";
 import SectionHeading from "../layout/section-heading";
-import { Card, CardContent, CardFooter, CardHeader } from "../ui/card";
 import { buttonVariants } from "../ui/button";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "../ui/carousel";
 import { Github } from "@/lib/icons";
 
 import { type Project, projects } from "@/lib/data";
 import { cn } from "@/lib/utils";
 
-const MotionCarouselContent = motion(CarouselContent);
-const MotionCarouselItem = motion(CarouselItem);
-
 export default function ProjectsSection() {
-  const carouselRef = useRef<HTMLElement>(null);
-  const carouselInView = useInView(carouselRef, { once: true });
+  const containerRef = useRef<HTMLDivElement>(null);
+  const inView = useInView(containerRef, { once: true, margin: "-100px" });
+  const [activeTech, setActiveTech] = useState<string | "all">("all");
 
-  const carouselVariants: Variants = {
+  const containerVariants: Variants = {
     hidden: { opacity: 0 },
-    show: { opacity: 1, transition: { staggerChildren: 0.5, duration: 1 } },
+    show: { 
+      opacity: 1, 
+      transition: { 
+        staggerChildren: 0.1,
+        delayChildren: 0.3
+      } 
+    },
   };
 
   const itemVariants: Variants = {
-    hidden: { opacity: 0, x: 20 },
-    show: { opacity: 1, x: 0 },
+    hidden: { y: 20, opacity: 0 },
+    show: { 
+      y: 0, 
+      opacity: 1,
+      transition: {
+        duration: 0.8,
+        ease: "easeOut"
+      }
+    },
   };
 
+  const allTechnologies = useMemo(() => {
+    const labels = new Set<string>();
+    projects.forEach((p) => p.technologies.forEach((t) => labels.add(t.label)));
+    return ["all", ...Array.from(labels).sort()];
+  }, []);
+
+  const filteredProjects = useMemo(() => {
+    if (activeTech === "all") return projects;
+    return projects.filter((p) => p.technologies.some((t) => t.label === activeTech));
+  }, [activeTech]);
+
+  const featuredProject = filteredProjects.find((p) => p.featured);
+  const otherProjects = filteredProjects.filter((p) => p !== featuredProject);
+
   return (
-    <section
-      id="projects"
-      className="container mx-auto h-full w-full space-y-8"
-    >
-      <SectionHeading title="Projects" />
-      <Carousel
-        opts={{
-          align: "start",
-        }}
-        className="mx-auto w-full max-w-xs md:max-w-2xl lg:max-w-full"
-        orientation="horizontal"
+    <section id="projects" className="container mx-auto space-y-10">
+      <SectionHeading title="Featured Projects" />
+
+      {/* Tech filter pills */}
+      <motion.div
+        className="flex flex-wrap items-center justify-center gap-2"
+        initial={{ opacity: 0, y: 10 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.5 }}
       >
-        <MotionCarouselContent
-          ref={carouselRef}
-          variants={carouselVariants}
-          initial="hidden"
-          animate={carouselInView ? "show" : "hidden"}
-        >
-          {projects.map((project) => (
-            <MotionCarouselItem
-              key={project.title}
-              variants={itemVariants}
-              className="h-full md:basis-1/2 lg:basis-1/3 xl:basis-1/4"
-            >
-              <div>
-                <ProjectCard project={project} />
-              </div>
-            </MotionCarouselItem>
-          ))}
-        </MotionCarouselContent>
-        <CarouselPrevious
-          variant="plain"
-          className="h-12 bg-background/50 bg-clip-padding ring-primary backdrop-filter hover:bg-primary-foreground/20 hover:ring-2"
-        />
-        <CarouselNext
-          variant="plain"
-          className="h-12 bg-background/50 bg-clip-padding ring-primary backdrop-filter hover:bg-primary-foreground/20 hover:ring-2"
-        />
-      </Carousel>
-      <p className="font-light">
-        See other (mostly unfinished) projects on my{" "}
-        <a
-          href="https://github.com/RugeFX"
-          rel="noopener noreferrer"
-          target="_blank"
-          className="text-nowrap font-semibold text-foreground underline transition-colors hover:text-primary"
-        >
-          Github
-        </a>
-      </p>
+        {allTechnologies.map((label) => (
+          <button
+            key={label}
+            onClick={() => setActiveTech(label as typeof activeTech)}
+            className={cn(
+              "rounded-full border px-4 py-1.5 text-sm transition-colors",
+              activeTech === label
+                ? "border-primary bg-primary text-primary-foreground"
+                : "border-border bg-accent hover:bg-accent/80"
+            )}
+          >
+            {label}
+          </button>
+        ))}
+      </motion.div>
+
+      <motion.div
+        ref={containerRef}
+        variants={containerVariants}
+        initial="hidden"
+        animate={inView ? "show" : "hidden"}
+        className={cn(
+          "grid gap-8",
+          featuredProject ? "lg:grid-cols-3" : "md:grid-cols-2 lg:grid-cols-3"
+        )}
+      >
+        {featuredProject && (
+          <motion.div variants={itemVariants} className="lg:col-span-3">
+            <FeaturedProjectCard project={featuredProject} />
+          </motion.div>
+        )}
+        {otherProjects.map((project) => (
+          <motion.div key={project.title} variants={itemVariants}>
+            <ProjectCard project={project} />
+          </motion.div>
+        ))}
+        {!featuredProject && filteredProjects.length === 0 && (
+          <div className="col-span-full text-center text-muted-foreground">
+            No projects match this filter.
+          </div>
+        )}
+      </motion.div>
+
+      <motion.div
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+        className="text-center"
+      >
+        <p className="text-muted-foreground">
+          Explore more projects on{" "}
+          <a
+            href="https://github.com/RugeFX"
+            rel="noopener noreferrer"
+            target="_blank"
+            className="font-medium text-primary underline-offset-4 hover:underline"
+          >
+            my GitHub
+          </a>
+        </p>
+      </motion.div>
     </section>
   );
 }
@@ -93,82 +133,157 @@ interface ProjectCardProps {
 }
 
 function ProjectCard({ project }: ProjectCardProps) {
-  const [isHovering, setIsHovering] = useState<boolean>(false);
-
-  const actionButtonsVariants: Variants = {
-    hidden: { opacity: 0, y: 50 },
-    show: {
-      opacity: 1,
-      y: 0,
-      transition: { type: "spring", duration: 0.5, bounce: 0.4 },
-    },
-  };
-
   return (
-    <Card
-      className="group aspect-square h-full transition-colors hover:border hover:border-primary"
-      onMouseOver={() => setIsHovering(true)}
-      onMouseLeave={() => setIsHovering(false)}
+    <motion.div
+      className="group relative h-full overflow-hidden rounded-2xl bg-card shadow-sm transition-all hover:shadow-xl"
+      whileHover={{ y: -5 }}
+      transition={{ duration: 0.3 }}
     >
-      <CardHeader className="relative h-1/2 w-full space-y-0 overflow-hidden p-0">
-        <div className="absolute grid h-full w-full content-center justify-center gap-2 bg-background/50 opacity-0 backdrop-blur-sm backdrop-filter transition-opacity group-hover:opacity-100">
-          {project.siteUrl !== null && (
+      <div className="relative aspect-video overflow-hidden">
+        <img
+          src={project.imageSrc}
+          alt={project.title}
+          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-background/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+        
+        <div className="absolute bottom-4 left-4 right-4 flex gap-3 opacity-0 transition-all duration-300 group-hover:opacity-100 group-hover:translate-y-0 translate-y-4">
+          {project.siteUrl && (
             <motion.a
               href={project.siteUrl}
               rel="noopener noreferrer"
               target="_blank"
-              variants={actionButtonsVariants}
-              initial="hidden"
-              animate={isHovering ? "show" : "hidden"}
               className={cn(
-                buttonVariants({ variant: "default", size: "sm" }),
-                "w-32 cursor-pointer gap-2 text-sm",
+                buttonVariants({ size: "sm" }),
+                "gap-2 rounded-full bg-primary/90 backdrop-blur-sm hover:bg-primary"
               )}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
             >
-              <LinkIcon className="size-3" />
-              Live Site
+              <LinkIcon className="size-4" />
+              Live Demo
             </motion.a>
           )}
-          {project.repositoryUrl !== null && (
+          {project.repositoryUrl && (
             <motion.a
               href={project.repositoryUrl}
               rel="noopener noreferrer"
               target="_blank"
-              variants={actionButtonsVariants}
-              initial="hidden"
-              animate={isHovering ? "show" : "hidden"}
               className={cn(
-                buttonVariants({ variant: "secondary", size: "sm" }),
-                "w-32 cursor-pointer gap-2 text-sm",
+                buttonVariants({ variant: "outline", size: "sm" }),
+                "gap-2 rounded-full border-background/50 bg-background/20 backdrop-blur-sm hover:bg-background/30"
               )}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
             >
-              <Github className="size-3 fill-foreground" />
-              Repository
+              <Github className="size-4 fill-current" />
+              Code
             </motion.a>
           )}
         </div>
-        <img
-          src={project.imageSrc}
-          alt={project.title}
-          className="h-full object-cover object-center"
-        />
-      </CardHeader>
-      <CardContent className="space-y-1 border-t px-4 py-2">
-        <h3 className="text-base font-medium md:text-lg xl:text-xl">
+      </div>
+      
+      <div className="p-6">
+        <h3 className="mb-2 font-display text-xl font-semibold">
           {project.title}
         </h3>
-        <p className="text-sm font-light sm:text-base">{project.description}</p>
-      </CardContent>
-      <CardFooter className="flex justify-between gap-2 px-4 pb-2">
-        <div className="flex h-9 items-center gap-2 border px-2 sm:h-12">
+        <p className="mb-4 text-sm text-muted-foreground">
+          {project.description}
+        </p>
+        
+        <div className="flex flex-wrap gap-2">
           {project.technologies.map((tech) => (
-            <tech.icon
+            <div
               key={tech.label}
-              className="size-5 fill-foreground sm:size-7"
-            />
+              className="group/tech relative"
+            >
+              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-accent transition-all hover:bg-primary hover:text-primary-foreground">
+                <tech.icon className="size-4 fill-current" />
+              </div>
+              <span className="absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded bg-foreground px-2 py-1 text-xs text-background opacity-0 transition-opacity group-hover/tech:opacity-100">
+                {tech.label}
+              </span>
+            </div>
           ))}
         </div>
-      </CardFooter>
-    </Card>
+      </div>
+    </motion.div>
+  );
+}
+
+function FeaturedProjectCard({ project }: ProjectCardProps) {
+  return (
+    <motion.div
+      className="relative overflow-hidden rounded-3xl bg-card shadow-md"
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.8, ease: "easeOut" }}
+    >
+      <div className="relative grid gap-0 lg:grid-cols-2">
+        <div className="relative aspect-video lg:aspect-auto lg:min-h-[360px]">
+          <img
+            src={project.imageSrc}
+            alt={project.title}
+            className="h-full w-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-background/70 via-transparent to-transparent" />
+          <div className="absolute left-4 top-4 inline-flex items-center gap-2 rounded-full bg-primary px-3 py-1 text-xs font-medium text-primary-foreground shadow">
+            <Star className="size-3.5" /> Featured
+          </div>
+        </div>
+        <div className="p-6 sm:p-8 lg:p-10">
+          <h3 className="mb-3 font-display text-2xl font-semibold sm:text-3xl">
+            {project.title}
+          </h3>
+          <p className="mb-6 max-w-prose text-muted-foreground">
+            {project.description}
+          </p>
+          <div className="mb-6 flex flex-wrap gap-2">
+            {project.technologies.map((tech) => (
+              <span
+                key={tech.label}
+                className="inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs text-muted-foreground"
+              >
+                <tech.icon className="size-3.5" />
+                {tech.label}
+              </span>
+            ))}
+          </div>
+          <div className="flex flex-wrap gap-3">
+            {project.siteUrl && (
+              <motion.a
+                href={project.siteUrl}
+                rel="noopener noreferrer"
+                target="_blank"
+                className={cn(
+                  buttonVariants({ size: "sm" }),
+                  "gap-2 rounded-full"
+                )}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <LinkIcon className="size-4" /> Live Demo
+              </motion.a>
+            )}
+            {project.repositoryUrl && (
+              <motion.a
+                href={project.repositoryUrl}
+                rel="noopener noreferrer"
+                target="_blank"
+                className={cn(
+                  buttonVariants({ variant: "outline", size: "sm" }),
+                  "gap-2 rounded-full"
+                )}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <Github className="size-4 fill-current" /> Code
+              </motion.a>
+            )}
+          </div>
+        </div>
+      </div>
+    </motion.div>
   );
 }
