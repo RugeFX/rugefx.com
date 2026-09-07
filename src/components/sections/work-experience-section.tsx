@@ -13,18 +13,18 @@ function ExperienceCard({
   isLast: boolean;
 }) {
   return (
-    <div className="flex relative gap-6 md:gap-8">
+    <div className="relative flex gap-6 md:gap-8">
       {/* Timeline */}
-      <div className="flex relative flex-col items-center">
+      <div className="relative flex flex-col items-center">
         {/* Circle */}
         <motion.div
           initial={{ scale: 0, opacity: 0 }}
           whileInView={{ scale: 1, opacity: 1 }}
           viewport={{ once: true, margin: "100px 0px 0px 0px" }}
           transition={{ duration: 0.6, ease: "easeOut", delay: index * 0.1 }}
-          className="relative z-10 w-4 h-4 rounded-full shadow-lg bg-primary"
+          className="bg-primary relative z-10 h-4 w-4 rounded-full shadow-lg"
         >
-          <div className="absolute -inset-2 rounded-full animate-pulse bg-primary/20" />
+          <div className="bg-primary/20 absolute -inset-2 animate-pulse rounded-full" />
         </motion.div>
 
         {/* Connecting Line */}
@@ -53,22 +53,24 @@ function ExperienceCard({
           ease: "easeOut",
           delay: index * 0.1 + 0.2,
         }}
-        className="flex-1 p-6 space-y-4 rounded-2xl bg-card shadow-xs"
+        className="bg-card flex-1 space-y-4 rounded-2xl p-6 shadow-xs"
       >
         <div className="space-y-2">
-          <h3 className="text-xl font-semibold font-display text-primary">
+          <h3 className="font-display text-primary text-xl font-semibold">
             {experience.position}
           </h3>
-          <p className="font-medium text-foreground">{experience.company}</p>
-          <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
-            <div className="flex gap-1 items-center">
-              <Calendar className="w-4 h-4" />
+          <p className="text-foreground font-medium">{experience.company}</p>
+          <div className="text-muted-foreground flex flex-wrap gap-4 text-sm">
+            <div className="flex items-center gap-1">
+              <Calendar className="h-4 w-4" />
               <span>{experience.duration}</span>
             </div>
-            <div className="flex gap-1 items-center">
-              <MapPin className="w-4 h-4" />
-              <span>{experience.location}</span>
-            </div>
+            {experience.location && (
+              <div className="flex items-center gap-1">
+                <MapPin className="h-4 w-4" />
+                <span>{experience.location}</span>
+              </div>
+            )}
           </div>
         </div>
 
@@ -77,7 +79,7 @@ function ExperienceCard({
             {experience.description.map((item, itemIndex) => (
               <li
                 key={itemIndex}
-                className="flex gap-2 items-start text-sm leading-relaxed text-muted-foreground"
+                className="text-muted-foreground flex items-start gap-2 text-sm leading-relaxed"
               >
                 <span className="text-primary mt-2 size-1.5 flex-shrink-0 rounded-full bg-current" />
                 {item}
@@ -91,7 +93,7 @@ function ExperienceCard({
                 {experience.technologies.map((tech) => (
                   <span
                     key={tech}
-                    className="px-3 py-1 text-xs font-medium rounded-full bg-primary/10 text-primary"
+                    className="bg-primary/10 text-primary rounded-full px-3 py-1 text-xs font-medium"
                   >
                     {tech}
                   </span>
@@ -107,7 +109,10 @@ function ExperienceCard({
 
 export default function WorkExperienceSection() {
   return (
-    <section id="experience" className="container mx-auto space-y-12 max-w-4xl">
+    <section
+      id="experience"
+      className="container mx-auto max-w-4xl scroll-mt-28 space-y-12"
+    >
       <SectionHeading title="Work Experience" />
       <motion.div
         initial={{ opacity: 0 }}

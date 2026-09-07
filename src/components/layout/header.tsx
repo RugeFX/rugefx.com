@@ -182,7 +182,7 @@ interface HeaderLinkProps {
 function HeaderLink({ id, isActive = false, children }: HeaderLinkProps) {
   const onClick = () => {
     const element = document.getElementById(id);
-    element?.scrollIntoView({ behavior: "smooth", block: "center" });
+    element?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
   return (
@@ -224,7 +224,7 @@ function MobileHeaderLink({
 }: MobileHeaderLinkProps) {
   const onClick = () => {
     const element = document.getElementById(id);
-    element?.scrollIntoView({ behavior: "smooth", block: "center" });
+    element?.scrollIntoView({ behavior: "smooth", block: "start" });
     onClose();
   };
 
