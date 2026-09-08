@@ -15,7 +15,7 @@ export default function ProjectDetailPage({
     return (
       <main className="grid min-h-screen place-content-center gap-5 text-center">
         <h1 className="font-display text-5xl">Project not found.</h1>
-        <Link className="text-[#6f2bd7]" to="/">
+        <Link className="text-portfolio-brand-strong" to="/">
           Return home
         </Link>
       </main>
@@ -25,14 +25,14 @@ export default function ProjectDetailPage({
   const { project, summary, title } = presentedProject;
 
   return (
-    <div className="portfolio-site min-h-screen bg-[#f8f7fb] pb-20 font-sans text-[#21172f] max-[520px]:pb-10">
+    <div className="bg-portfolio-canvas text-portfolio-ink [&_a:focus-visible]:outline-portfolio-focus [&_button:focus-visible]:outline-portfolio-focus min-h-screen pb-20 font-sans max-[520px]:pb-10 motion-reduce:[&_*]:animate-none motion-reduce:[&_*]:scroll-auto motion-reduce:[&_*]:transition-none [&_a]:no-underline [&_a:focus-visible]:outline-[3px] [&_a:focus-visible]:outline-offset-[5px] [&_button:focus-visible]:outline-[3px] [&_button:focus-visible]:outline-offset-[5px]">
       <main className="mx-auto max-w-[1280px] px-8 max-[1120px]:px-6 max-[760px]:px-[18px] max-[480px]:px-[14px]">
         <nav
           className="flex min-h-28 items-center justify-between gap-6 max-[520px]:min-h-[88px]"
           aria-label="Project navigation"
         >
           <Link
-            className="inline-flex items-center gap-[9px] text-sm text-[#6b5f77]"
+            className="text-portfolio-copy-muted inline-flex items-center gap-[9px] text-sm"
             to="/"
             hash="projects"
           >
@@ -47,12 +47,14 @@ export default function ProjectDetailPage({
         </nav>
 
         <article className="grid grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] gap-5 max-[900px]:grid-cols-1">
-          <header className="overflow-hidden rounded-[25px] bg-[#7c3aed] p-[clamp(34px,5vw,60px)] text-white max-[520px]:px-6 max-[520px]:py-[30px]">
-            <p className="text-sm text-[#e6d6ff]">{project.category}</p>
+          <header className="bg-portfolio-brand overflow-hidden rounded-[25px] p-[clamp(34px,5vw,60px)] text-white max-[520px]:px-6 max-[520px]:py-[30px]">
+            <p className="text-portfolio-on-brand-muted text-sm">
+              {project.category}
+            </p>
             <h1 className="font-display my-[34px] text-[clamp(54px,7vw,88px)] leading-[0.98] tracking-[-5px] max-[520px]:text-[54px] max-[520px]:tracking-[-3px]">
               {title}
             </h1>
-            <h2 className="max-w-[24ch] text-[21px] leading-normal font-normal text-[#f0e8ff]">
+            <h2 className="text-portfolio-on-brand max-w-[24ch] text-[21px] leading-normal font-normal">
               {summary}
             </h2>
             <div
@@ -61,7 +63,7 @@ export default function ProjectDetailPage({
             >
               {project.technologies.map((technology) => (
                 <span
-                  className="inline-flex items-center gap-2 rounded-[9px] border border-[#c8a8fb] px-[11px] py-2 text-xs [&_svg]:h-[15px] [&_svg]:w-[15px] [&_svg]:fill-current"
+                  className="border-portfolio-brand-outline inline-flex items-center gap-2 rounded-[9px] border px-[11px] py-2 text-xs [&_svg]:h-[15px] [&_svg]:w-[15px] [&_svg]:fill-current"
                   key={technology.label}
                   title={technology.label}
                 >
@@ -73,7 +75,7 @@ export default function ProjectDetailPage({
           </header>
 
           {project.imageSrc && (
-            <div className="grid min-h-[540px] place-items-center overflow-hidden rounded-[25px] bg-[#ede7fa] p-11 max-[900px]:min-h-[460px] max-[520px]:min-h-80 max-[520px]:p-6">
+            <div className="bg-portfolio-tint grid min-h-[540px] place-items-center overflow-hidden rounded-[25px] p-11 max-[900px]:min-h-[460px] max-[520px]:min-h-80 max-[520px]:p-6">
               <img
                 className="h-full w-full object-contain"
                 src={project.imageSrc}
@@ -82,17 +84,17 @@ export default function ProjectDetailPage({
             </div>
           )}
 
-          <div className="col-span-full grid grid-cols-[0.65fr_1.35fr] gap-[50px] overflow-hidden rounded-[25px] border border-[#eae6ef] bg-white p-11 max-[900px]:grid-cols-1 max-[900px]:gap-5 max-[520px]:px-6 max-[520px]:py-[30px]">
+          <div className="border-portfolio-border-soft col-span-full grid grid-cols-[0.65fr_1.35fr] gap-[50px] overflow-hidden rounded-[25px] border bg-white p-11 max-[900px]:grid-cols-1 max-[900px]:gap-5 max-[520px]:px-6 max-[520px]:py-[30px]">
             <h2 className="font-display text-[28px] font-semibold tracking-[-1px]">
               About the project
             </h2>
-            <p className="leading-[1.8] text-[#675d73]">
+            <p className="text-portfolio-copy-muted leading-[1.8]">
               {project.description}
             </p>
             <div className="col-start-2 flex flex-wrap gap-3 max-[900px]:col-start-1">
               {project.siteUrl && (
                 <a
-                  className="inline-flex items-center gap-2 rounded-full bg-[#ede7fa] px-[15px] py-[11px] text-[13px] text-[#6423c9]"
+                  className="bg-portfolio-tint text-portfolio-brand-deep inline-flex items-center gap-2 rounded-full px-[15px] py-[11px] text-[13px]"
                   href={project.siteUrl}
                   target="_blank"
                   rel="noreferrer"
@@ -103,7 +105,7 @@ export default function ProjectDetailPage({
               )}
               {project.additionalLinks?.map((link) => (
                 <a
-                  className="inline-flex items-center gap-2 rounded-full bg-[#ede7fa] px-[15px] py-[11px] text-[13px] text-[#6423c9]"
+                  className="bg-portfolio-tint text-portfolio-brand-deep inline-flex items-center gap-2 rounded-full px-[15px] py-[11px] text-[13px]"
                   key={link.url}
                   href={link.url}
                   target="_blank"
@@ -115,7 +117,7 @@ export default function ProjectDetailPage({
               ))}
               {project.repositoryUrl && (
                 <a
-                  className="inline-flex items-center gap-2 rounded-full bg-[#ede7fa] px-[15px] py-[11px] text-[13px] text-[#6423c9]"
+                  className="bg-portfolio-tint text-portfolio-brand-deep inline-flex items-center gap-2 rounded-full px-[15px] py-[11px] text-[13px]"
                   href={project.repositoryUrl}
                   target="_blank"
                   rel="noreferrer"

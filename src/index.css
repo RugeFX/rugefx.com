@@ -6,6 +6,57 @@ layer(base);
   --font-sans: Inter, sans-serif;
   --font-display: Space Grotesk, sans-serif;
 
+  --color-portfolio-canvas: #f8f7fb;
+  --color-portfolio-ink: #21172f;
+  --color-portfolio-ink-strong: #21142f;
+  --color-portfolio-brand: #7c3aed;
+  --color-portfolio-brand-strong: #7132dc;
+  --color-portfolio-brand-deep: #6423c9;
+  --color-portfolio-tint: #ede7fa;
+  --color-portfolio-tint-soft: #f0e9fb;
+  --color-portfolio-tint-active: #eae1f9;
+  --color-portfolio-media: #edf2e9;
+  --color-portfolio-border-soft: #eae6ef;
+  --color-portfolio-border: #e5deeb;
+  --color-portfolio-divider: #ddd4e5;
+  --color-portfolio-divider-strong: #cfc2e2;
+  --color-portfolio-border-hover: #cdb8ef;
+  --color-portfolio-brand-outline: #c4a4ff;
+  --color-portfolio-copy: #44394f;
+  --color-portfolio-copy-muted: #675d73;
+  --color-portfolio-copy-subtle: #776a83;
+  --color-portfolio-separator: #9b8da9;
+  --color-portfolio-on-brand: #f1e9ff;
+  --color-portfolio-on-brand-muted: #e6d6ff;
+  --color-portfolio-on-dark: #f7f2ff;
+  --color-portfolio-on-dark-muted: #d8cbed;
+  --color-portfolio-on-dark-accent: #d3b4ff;
+  --color-portfolio-focus: #a78bfa;
+  --color-portfolio-map-shadow: #bda4e5;
+  --color-portfolio-stack-border: #d9cce6;
+  --color-portfolio-stack-line: rgb(91 63 117 / 18%);
+  --color-portfolio-stack-line-strong: rgb(91 63 117 / 22%);
+  --color-portfolio-footer-line: rgb(255 255 255 / 25%);
+  --shadow-portfolio-card: 0 18px 42px rgb(53 31 80 / 9%);
+  --shadow-portfolio-stack: 0 16px 38px rgb(42 24 62 / 8%);
+  --shadow-portfolio-timeline-dot: 0 0 0 5px var(--color-portfolio-canvas);
+  --animate-location-pulse: location-pulse 2.4s cubic-bezier(0.19, 1, 0.22, 1)
+    infinite;
+
+  @keyframes location-pulse {
+    0%,
+    28% {
+      opacity: 0.45;
+      transform: scale(0.85);
+    }
+
+    75%,
+    100% {
+      opacity: 0;
+      transform: scale(2.5);
+    }
+  }
+
   --color-border: hsl(var(--border));
   --color-input: hsl(var(--input));
   --color-ring: hsl(var(--ring));
@@ -36,6 +87,43 @@ layer(base);
   --radius-lg: var(--radius);
   --radius-md: calc(var(--radius) - 2px);
   --radius-sm: calc(var(--radius) - 4px);
+}
+
+@custom-variant short-viewport {
+  @media (max-height: 700px) {
+    @slot;
+  }
+}
+
+@utility grid-areas-experience {
+  grid-template-areas:
+    "lead details"
+    "tech details"
+    "hint hint";
+}
+
+@utility grid-areas-experience-single {
+  grid-template-areas:
+    "lead"
+    "details"
+    "tech"
+    "hint";
+}
+
+@utility grid-area-lead {
+  grid-area: lead;
+}
+
+@utility grid-area-details {
+  grid-area: details;
+}
+
+@utility grid-area-tech {
+  grid-area: tech;
+}
+
+@utility grid-area-hint {
+  grid-area: hint;
 }
 
 @utility container {

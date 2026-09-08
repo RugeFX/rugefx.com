@@ -13,6 +13,7 @@
     "@icons-pack/react-simple-icons": "^13.7.0",
     "@tailwindcss/vite": "^4.1.11",
     "@tanstack/react-router": "^1.170.33",
+    "cn": "^0.2.6",
     "lucide-react": "^0.358.0",
     "motion": "^12.23.12",
     "react": "^19.1.0",

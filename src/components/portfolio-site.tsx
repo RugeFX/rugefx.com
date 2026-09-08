@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import {
   motion,
   useReducedMotion,
@@ -6,16 +6,10 @@ import {
   useTransform,
   type MotionValue,
 } from "motion/react";
-import {
-  ArrowDown,
-  ArrowUpRight,
-  MapPin,
-  Menu,
-  X,
-  Linkedin,
-} from "lucide-react";
+import { ArrowDown, ArrowUpRight, Menu, X, Linkedin } from "lucide-react";
 import { SiGithub, SiX } from "@icons-pack/react-simple-icons";
 import { Link } from "@tanstack/react-router";
+import indonesiaMap from "@/assets/indonesia.svg";
 import { workExperiences, type WorkExperience } from "@/lib/data";
 import {
   presentedProjects,
@@ -32,6 +26,14 @@ const sectionTitleClass =
 const heroCardClass = "rounded-[25px]";
 const socialCardClass =
   "relative min-h-[180px] min-w-0 overflow-hidden rounded-[25px] px-[30px] py-[26px] transition-transform duration-200 hover:-translate-y-1 max-[1120px]:min-h-[170px] max-[760px]:min-h-[158px] max-[760px]:p-6 max-[480px]:p-[22px]";
+const portfolioRootClass =
+  "bg-portfolio-canvas text-portfolio-ink min-h-screen font-sans [&_a]:no-underline [&_a:focus-visible]:outline-[3px] [&_a:focus-visible]:outline-offset-[5px] [&_a:focus-visible]:outline-portfolio-focus [&_button:focus-visible]:outline-[3px] [&_button:focus-visible]:outline-offset-[5px] [&_button:focus-visible]:outline-portfolio-focus motion-reduce:[&_*]:scroll-auto motion-reduce:[&_*]:animate-none motion-reduce:[&_*]:transition-none";
+const experienceStackClass =
+  "relative h-[280svh] pl-[52px] max-[760px]:pl-9 max-[480px]:pl-0 max-[360px]:h-auto max-[360px]:pl-0 short-viewport:h-auto short-viewport:pl-0 motion-reduce:h-auto motion-reduce:pl-0";
+const experienceStageClass =
+  "sticky top-(--experience-stack-top) h-[calc(100svh-var(--experience-stack-top)-15px)] before:absolute before:top-[38px] before:bottom-0 before:left-[-37px] before:w-px before:bg-portfolio-divider-strong max-[760px]:before:left-[-27px] max-[480px]:before:hidden max-[360px]:relative max-[360px]:top-auto max-[360px]:h-auto short-viewport:relative short-viewport:top-auto short-viewport:h-auto short-viewport:before:hidden motion-reduce:relative motion-reduce:top-auto motion-reduce:h-auto motion-reduce:before:hidden";
+const experienceCardClass =
+  "absolute inset-x-0 top-0 min-h-[470px] rounded-[25px] border border-portfolio-stack-border bg-white text-portfolio-ink shadow-portfolio-stack before:absolute before:top-[31px] before:left-[-45px] before:size-[15px] before:rounded-full before:border-2 before:border-portfolio-brand before:bg-portfolio-canvas before:shadow-portfolio-timeline-dot max-[760px]:min-h-[580px] max-[760px]:before:top-[34px] max-[760px]:before:left-[-34px] max-[760px]:before:size-[13px] max-[480px]:min-h-[600px] max-[480px]:rounded-[20px] max-[480px]:before:hidden max-[360px]:relative max-[360px]:inset-auto max-[360px]:mb-5 max-[360px]:min-h-0 max-[360px]:transform-none! short-viewport:relative short-viewport:inset-auto short-viewport:mb-5 short-viewport:min-h-0 short-viewport:transform-none! motion-reduce:relative motion-reduce:inset-auto motion-reduce:mb-5 motion-reduce:min-h-0 motion-reduce:transform-none!";
 
 export default function PortfolioSite() {
   const [category, setCategory] = useState<(typeof categories)[number]>("All");
@@ -40,7 +42,7 @@ export default function PortfolioSite() {
     ({ project }) => category === "All" || project.category === category,
   );
   return (
-    <div className="portfolio-site min-h-screen bg-[#f8f7fb] font-sans text-[#21172f]">
+    <div className={portfolioRootClass}>
       <div className="mx-auto max-w-[1280px] px-8 max-[1120px]:px-6 max-[760px]:px-[18px] max-[480px]:px-[14px]">
         <header className="relative flex h-28 items-center justify-between max-[760px]:h-[88px]">
           <a
@@ -54,7 +56,7 @@ export default function PortfolioSite() {
             className={cn(
               "hidden gap-[38px] text-sm min-[761px]:flex",
               menuOpen &&
-                "max-[760px]:absolute max-[760px]:inset-x-0 max-[760px]:top-[75px] max-[760px]:z-10 max-[760px]:flex max-[760px]:justify-between max-[760px]:gap-2.5 max-[760px]:rounded-[18px] max-[760px]:border max-[760px]:border-[#eae6ef] max-[760px]:bg-white max-[760px]:p-6",
+                "max-[760px]:border-portfolio-border-soft max-[760px]:absolute max-[760px]:inset-x-0 max-[760px]:top-[75px] max-[760px]:z-10 max-[760px]:flex max-[760px]:justify-between max-[760px]:gap-2.5 max-[760px]:rounded-[18px] max-[760px]:border max-[760px]:bg-white max-[760px]:p-6",
             )}
           >
             {[
@@ -68,7 +70,7 @@ export default function PortfolioSite() {
             ))}
           </nav>
           <a
-            className="flex items-center gap-3 text-sm text-[#7c3aed] max-[760px]:mr-5 max-[760px]:ml-auto max-[480px]:mr-3.5"
+            className="text-portfolio-brand flex items-center gap-3 text-sm max-[760px]:mr-5 max-[760px]:ml-auto max-[480px]:mr-3.5"
             href="mailto:zackfxg@gmail.com"
           >
             Contact <ArrowUpRight size={19} />
@@ -92,7 +94,7 @@ export default function PortfolioSite() {
               <div
                 className={cn(
                   heroCardClass,
-                  "flex-1 bg-[#7c3aed] p-12 text-white max-[1120px]:p-[clamp(36px,6vw,56px)] max-[760px]:px-[30px] max-[760px]:py-[34px] max-[480px]:px-6 max-[480px]:py-[30px] min-[1121px]:min-h-[540px]",
+                  "bg-portfolio-brand flex-1 p-12 text-white max-[1120px]:p-[clamp(36px,6vw,56px)] max-[760px]:px-[30px] max-[760px]:py-[34px] max-[480px]:px-6 max-[480px]:py-[30px] min-[1121px]:min-h-[540px]",
                 )}
               >
                 <h1 className="font-display mb-[35px] text-[clamp(65px,7.8vw,108px)] leading-[1.02] font-semibold tracking-[-7px] max-[1120px]:text-[clamp(76px,11vw,108px)] max-[1120px]:tracking-[-6px] max-[760px]:mb-[25px] max-[760px]:text-[clamp(66px,16vw,92px)] max-[760px]:tracking-[-4px] max-[480px]:text-[clamp(58px,18vw,78px)] max-[480px]:tracking-[-3px]">
@@ -103,19 +105,19 @@ export default function PortfolioSite() {
                 <h2 className="mb-6 text-[26px] font-medium tracking-[-1px] max-[760px]:text-2xl">
                   Software engineer
                 </h2>
-                <p className="text-[21px] leading-[1.55] text-[#f1e9ff] max-[760px]:text-[19px]">
+                <p className="text-portfolio-on-brand text-[21px] leading-[1.55] max-[760px]:text-[19px]">
                   Building web, mobile, and
                   <br className="desktop-break" /> connected systems.
                 </p>
                 <div className="mt-[42px] flex flex-wrap gap-3.5 max-[1120px]:gap-2.5 max-[760px]:mt-8 max-[480px]:grid max-[480px]:grid-cols-1">
                   <a
-                    className="inline-flex items-center justify-center gap-3 rounded-[40px] border border-white bg-white px-6 py-[17px] text-sm text-[#21172f] max-[1120px]:px-[18px] max-[1120px]:py-3.5 max-[480px]:w-full"
+                    className="text-portfolio-ink inline-flex items-center justify-center gap-3 rounded-[40px] border border-white bg-white px-6 py-[17px] text-sm max-[1120px]:px-[18px] max-[1120px]:py-3.5 max-[480px]:w-full"
                     href="mailto:zackfxg@gmail.com"
                   >
                     Get in touch <ArrowUpRight size={18} />
                   </a>
                   <a
-                    className="inline-flex items-center justify-center gap-3 rounded-[40px] border border-[#c4a4ff] bg-transparent px-6 py-[17px] text-sm text-white max-[1120px]:px-[18px] max-[1120px]:py-3.5 max-[480px]:w-full"
+                    className="border-portfolio-brand-outline inline-flex items-center justify-center gap-3 rounded-[40px] border bg-transparent px-6 py-[17px] text-sm text-white max-[1120px]:px-[18px] max-[1120px]:py-3.5 max-[480px]:w-full"
                     href={resume}
                     target="_blank"
                     rel="noreferrer"
@@ -126,7 +128,10 @@ export default function PortfolioSite() {
               </div>
               <div className="grid grid-cols-3 gap-5 max-[760px]:grid-cols-2 max-[760px]:gap-4">
                 <a
-                  className={cn(socialCardClass, "bg-[#21142f] text-white")}
+                  className={cn(
+                    socialCardClass,
+                    "bg-portfolio-ink-strong text-white",
+                  )}
                   href="https://github.com/RugeFX"
                   target="_blank"
                   rel="noreferrer"
@@ -136,17 +141,22 @@ export default function PortfolioSite() {
                   <h2 className="mt-[18px] mb-1 text-[23px] font-medium tracking-[-0.8px] max-[480px]:text-xl">
                     GitHub
                   </h2>
-                  <span className="text-sm text-[#d7bbfa]">RugeFX</span>
+                  <span className="text-portfolio-on-dark-muted text-sm">
+                    RugeFX
+                  </span>
                 </a>
                 <a
-                  className={cn(socialCardClass, "bg-[#ede7fa] text-[#6f2bde]")}
+                  className={cn(
+                    socialCardClass,
+                    "bg-portfolio-tint text-portfolio-brand-strong",
+                  )}
                   href="https://linkedin.com/in/rugefx"
                   target="_blank"
                   rel="noreferrer"
                 >
                   <Linkedin size={38} aria-hidden="true" />
                   <ArrowUpRight className="absolute top-[27px] right-[25px]" />
-                  <h2 className="mt-[18px] mb-1 text-[23px] font-medium tracking-[-0.8px] text-[#21172f] max-[480px]:text-xl">
+                  <h2 className="text-portfolio-ink mt-[18px] mb-1 text-[23px] font-medium tracking-[-0.8px] max-[480px]:text-xl">
                     LinkedIn
                   </h2>
                   <span className="text-sm">Ahmad Zacky</span>
@@ -154,7 +164,7 @@ export default function PortfolioSite() {
                 <a
                   className={cn(
                     socialCardClass,
-                    "border border-[#e3dce9] bg-white text-[#21172f] max-[760px]:col-span-2 max-[760px]:min-h-[140px]",
+                    "border-portfolio-border text-portfolio-ink border bg-white max-[760px]:col-span-2 max-[760px]:min-h-[140px]",
                   )}
                   href="https://twitter.com/RugeDev"
                   target="_blank"
@@ -165,12 +175,14 @@ export default function PortfolioSite() {
                   <h2 className="mt-[18px] mb-1 text-[23px] font-medium tracking-[-0.8px] max-[480px]:text-xl">
                     X
                   </h2>
-                  <span className="text-sm text-[#71657c]">@RugeDev</span>
+                  <span className="text-portfolio-copy-muted text-sm">
+                    @RugeDev
+                  </span>
                 </a>
               </div>
             </div>
             <div className="flex min-w-0 flex-col gap-5 max-[760px]:gap-4">
-              <div className="flex-1 rounded-[25px] border border-[#eae6ef] bg-white p-11 max-[1120px]:p-[clamp(34px,5vw,52px)] max-[760px]:p-[30px]">
+              <div className="border-portfolio-border-soft flex-1 rounded-[25px] border bg-white p-11 max-[1120px]:p-[clamp(34px,5vw,52px)] max-[760px]:p-[30px]">
                 <h2 className="font-display mb-7 text-[33px] font-semibold tracking-[-1.3px] max-[1120px]:text-[32px] max-[760px]:text-[28px]">
                   A bit about me.
                 </h2>
@@ -184,27 +196,18 @@ export default function PortfolioSite() {
                 </p>
               </div>
               <div className="grid min-h-[260px] flex-1 grid-cols-2 gap-5 max-[1120px]:min-h-[280px] max-[760px]:min-h-[235px] max-[760px]:gap-4 max-[480px]:min-h-0 max-[480px]:flex-none max-[480px]:grid-cols-1">
-                <div className="relative flex flex-col overflow-hidden rounded-[25px] bg-[#ede7fa] p-[27px] max-[1120px]:p-[30px] max-[760px]:p-[22px] max-[480px]:min-h-[220px]">
+                <div className="bg-portfolio-tint relative flex flex-col overflow-hidden rounded-[25px] p-[27px] max-[1120px]:p-[30px] max-[760px]:p-[22px] max-[480px]:min-h-[220px]">
                   <h2 className="text-[23px] leading-[1.4] font-medium tracking-[-0.8px] max-[760px]:text-[21px]">
                     Bekasi,
                     <br />
                     Indonesia
                   </h2>
-                  <div
-                    className="relative grid min-h-[140px] flex-1 place-items-center text-[#7c3aed]"
-                    aria-hidden="true"
-                  >
-                    <div className="map-streets" />
-                    <MapPin
-                      className="relative [stroke-width:1.4] [filter:drop-shadow(0_6px_5px_#bda4e5)]"
-                      color="#ede7fa"
-                      size={45}
-                      fill="currentColor"
-                    />
+                  <div className="relative min-h-[140px] flex-1">
+                    <IndonesiaLocationMap />
                   </div>
                 </div>
                 <a
-                  className="flex flex-col rounded-[25px] bg-[#21142f] p-7 text-white max-[1120px]:p-[30px] max-[760px]:p-[22px] max-[480px]:min-h-[220px]"
+                  className="bg-portfolio-ink-strong flex flex-col rounded-[25px] p-7 text-white max-[1120px]:p-[30px] max-[760px]:p-[22px] max-[480px]:min-h-[220px]"
                   href="#experience"
                 >
                   <h2 className="text-[23px] leading-[1.4] font-medium tracking-[-0.8px] max-[760px]:text-[21px]">
@@ -213,7 +216,7 @@ export default function PortfolioSite() {
                   <p className="my-5 mb-8 text-[22px] leading-normal max-[1120px]:max-w-[22ch] max-[760px]:text-[19px]">
                     Building operational tools at Nauchara.
                   </p>
-                  <span className="mt-auto flex items-center gap-1.5 text-sm text-[#d3b4ff] max-[760px]:text-xs">
+                  <span className="text-portfolio-on-dark-accent mt-auto flex items-center gap-1.5 text-sm max-[760px]:text-xs">
                     My experience <ArrowUpRight size={17} />
                   </span>
                 </a>
@@ -229,7 +232,7 @@ export default function PortfolioSite() {
           >
             <div className="mb-9 flex items-end justify-between gap-[30px] max-[760px]:mb-7 max-[760px]:flex-col max-[760px]:items-start max-[760px]:gap-3">
               <h2 className={sectionTitleClass}>Experience</h2>
-              <p className="flex items-center gap-2.5 text-sm leading-normal text-[#6c5f78] max-[760px]:max-w-[34ch] [&_svg]:h-[17px] [&_svg]:w-[17px]">
+              <p className="text-portfolio-copy-muted flex items-center gap-2.5 text-sm leading-normal max-[760px]:max-w-[34ch] [&_svg]:h-[17px] [&_svg]:w-[17px]">
                 Scroll through the work that shaped how I build.
                 <ArrowDown aria-hidden="true" />
               </p>
@@ -249,8 +252,9 @@ export default function PortfolioSite() {
                 {categories.map((item) => (
                   <button
                     className={cn(
-                      "cursor-pointer rounded-[30px] px-3.5 py-[9px] text-[13px] text-[#645972] max-[480px]:px-[11px] max-[480px]:py-2",
-                      category === item && "bg-[#eae1f9] text-[#6021be]",
+                      "text-portfolio-copy-muted cursor-pointer rounded-[30px] px-3.5 py-[9px] text-[13px] max-[480px]:px-[11px] max-[480px]:py-2",
+                      category === item &&
+                        "bg-portfolio-tint-active text-portfolio-brand-deep",
                     )}
                     key={item}
                     aria-pressed={category === item}
@@ -278,7 +282,7 @@ export default function PortfolioSite() {
             </div>
           </section>
         </main>
-        <footer className="mt-20 rounded-t-[25px] bg-[#7c3aed] p-[45px] text-white max-[760px]:px-6 max-[760px]:py-[30px]">
+        <footer className="bg-portfolio-brand mt-20 rounded-t-[25px] p-[45px] text-white max-[760px]:px-6 max-[760px]:py-[30px]">
           <div>
             <h2 className="font-display mb-5 text-[42px] tracking-[-1.5px] max-[760px]:text-[32px]">
               Let’s build something.
@@ -290,13 +294,67 @@ export default function PortfolioSite() {
               zackfxg@gmail.com <ArrowUpRight />
             </a>
           </div>
-          <div className="mt-[50px] flex flex-wrap justify-between gap-5 border-t border-[#ffffff40] pt-7 text-xs text-[#eee3ff]">
+          <div className="border-portfolio-footer-line text-portfolio-on-brand mt-[50px] flex flex-wrap justify-between gap-5 border-t pt-7 text-xs">
             <span>© {new Date().getFullYear()} Ahmad Zacky</span>
             <a href="#home">Back to top ↑</a>
           </div>
         </footer>
       </div>
     </div>
+  );
+}
+
+function IndonesiaLocationMap() {
+  const maskId = `indonesia-map-${useId().replace(/:/g, "")}`;
+
+  return (
+    <svg
+      aria-hidden="true"
+      className="text-portfolio-brand absolute inset-x-[-10px] bottom-[-6px] h-[132px] w-[calc(100%+20px)] overflow-visible"
+      preserveAspectRatio="xMidYMid meet"
+      viewBox="-2.65 150.83 1210.3 561.34"
+    >
+      <defs>
+        <mask
+          id={maskId}
+          x="-2.65"
+          y="150.83"
+          width="1210.3"
+          height="561.34"
+          maskUnits="userSpaceOnUse"
+        >
+          <image
+            href={indonesiaMap}
+            x="-2.65"
+            y="150.83"
+            width="1210.3"
+            height="561.34"
+            preserveAspectRatio="none"
+          />
+        </mask>
+      </defs>
+
+      <rect
+        className="fill-current opacity-20"
+        x="-2.65"
+        y="150.83"
+        width="1210.3"
+        height="561.34"
+        mask={`url(#${maskId})`}
+      />
+
+      <g transform="translate(311 569)">
+        <circle
+          className="motion-safe:animate-location-pulse origin-center fill-current [transform-box:fill-box]"
+          r="22"
+        />
+        <circle
+          className="stroke-portfolio-tint fill-current"
+          r="17"
+          strokeWidth="8"
+        />
+      </g>
+    </svg>
   );
 }
 
@@ -344,8 +402,8 @@ function ExperienceStack() {
   }, []);
 
   return (
-    <div className="experience-stack" ref={stackRef}>
-      <div className="experience-stack-stage" ref={stageRef}>
+    <div className={experienceStackClass} ref={stackRef}>
+      <div className={experienceStageClass} ref={stageRef}>
         {workExperiences.map((experience, index) => (
           <ExperienceCard
             key={experience.company}
@@ -394,13 +452,19 @@ function ExperienceCard({
 
   return (
     <motion.article
-      className="experience-stack-card"
-      data-experience-index={index}
-      style={reduceMotion ? undefined : { y }}
+      className={cn(
+        experienceCardClass,
+        index === 0 && "bg-portfolio-tint",
+        index === 1 &&
+          "border-portfolio-brand bg-portfolio-brand before:bg-portfolio-brand text-white",
+        index === 3 &&
+          "border-portfolio-ink-strong bg-portfolio-ink-strong before:border-portfolio-ink-strong before:bg-portfolio-ink-strong text-white",
+      )}
+      style={reduceMotion ? { zIndex: 10 + index } : { y, zIndex: 10 + index }}
     >
       <header
         className={cn(
-          "grid min-h-[84px] grid-cols-[minmax(0,1.35fr)_minmax(150px,0.8fr)_auto] items-center gap-7 border-b border-[rgba(91,63,117,0.18)] px-[34px] py-5 max-[760px]:min-h-[86px] max-[760px]:grid-cols-[minmax(0,1fr)_auto] max-[760px]:gap-x-4 max-[760px]:gap-y-[5px] max-[760px]:px-[22px] max-[760px]:py-[15px] max-[480px]:min-h-20 max-[480px]:px-[18px] max-[480px]:py-3.5",
+          "border-portfolio-stack-line grid min-h-[84px] grid-cols-[minmax(0,1.35fr)_minmax(150px,0.8fr)_auto] items-center gap-7 border-b px-[34px] py-5 max-[760px]:min-h-[86px] max-[760px]:grid-cols-[minmax(0,1fr)_auto] max-[760px]:gap-x-4 max-[760px]:gap-y-[5px] max-[760px]:px-[22px] max-[760px]:py-[15px] max-[480px]:min-h-20 max-[480px]:px-[18px] max-[480px]:py-3.5",
           usesDarkSurface && "border-white/20",
         )}
       >
@@ -410,7 +474,7 @@ function ExperienceCard({
         <p
           className={cn(
             "text-sm leading-[1.4] max-[760px]:text-xs max-[480px]:text-[11px]",
-            usesDarkSurface && "text-[#eadfff]",
+            usesDarkSurface && "text-portfolio-on-brand-muted",
           )}
         >
           {experience.position}
@@ -418,19 +482,19 @@ function ExperienceCard({
         <span
           className={cn(
             "text-sm leading-[1.4] whitespace-nowrap max-[760px]:text-xs max-[480px]:text-[11px]",
-            usesDarkSurface && "text-[#eadfff]",
+            usesDarkSurface && "text-portfolio-on-brand-muted",
           )}
         >
           {experience.duration}
         </span>
       </header>
-      <div className="experience-card-body">
-        <p className="experience-card-lead font-display max-w-[31ch] text-[23px] leading-[1.4] font-medium tracking-[-0.7px] max-[760px]:max-w-[35ch] max-[760px]:text-[21px] max-[480px]:text-[19px]">
+      <div className="grid-areas-experience max-[760px]:grid-areas-experience-single grid min-h-[385px] grid-cols-[minmax(0,0.9fr)_minmax(0,1.25fr)] gap-x-[50px] gap-y-7 px-[42px] pt-[38px] pb-[30px] max-[760px]:min-h-[494px] max-[760px]:grid-cols-1 max-[760px]:gap-[26px] max-[760px]:px-6 max-[760px]:pt-[30px] max-[760px]:pb-6 max-[480px]:min-h-[518px] max-[480px]:px-5 max-[480px]:pt-[26px] max-[480px]:pb-[21px]">
+        <p className="grid-area-lead font-display max-w-[31ch] text-[23px] leading-[1.4] font-medium tracking-[-0.7px] max-[760px]:max-w-[35ch] max-[760px]:text-[21px] max-[480px]:text-[19px]">
           {experience.description[0]}
         </p>
         <div
           className={cn(
-            "experience-card-details border-l border-[rgba(91,63,117,0.22)] pl-[42px] max-[760px]:border-t max-[760px]:border-l-0 max-[760px]:pt-[25px] max-[760px]:pl-0",
+            "grid-area-details border-portfolio-stack-line-strong border-l pl-[42px] max-[760px]:border-t max-[760px]:border-l-0 max-[760px]:pt-[25px] max-[760px]:pl-0",
             usesDarkSurface && "border-white/20",
           )}
         >
@@ -445,8 +509,8 @@ function ExperienceCard({
         </div>
         <div
           className={cn(
-            "experience-card-tech flex flex-wrap self-end text-[13px] leading-[1.7] text-[#655873]",
-            usesDarkSurface && "text-[#d8cbed]",
+            "grid-area-tech text-portfolio-copy-muted flex flex-wrap self-end text-[13px] leading-[1.7]",
+            usesDarkSurface && "text-portfolio-on-dark-muted",
           )}
           aria-label="Technology stack"
         >
@@ -463,8 +527,8 @@ function ExperienceCard({
         </div>
         <p
           className={cn(
-            "experience-scroll-hint inline-flex items-center gap-[7px] justify-self-end text-xs text-[#776a83] [&_svg]:h-3.5 [&_svg]:w-3.5",
-            usesDarkSurface && "text-[#cbb8e2]",
+            "grid-area-hint text-portfolio-copy-subtle inline-flex items-center gap-[7px] justify-self-end text-xs [&_svg]:h-3.5 [&_svg]:w-3.5",
+            usesDarkSurface && "text-portfolio-on-dark-muted",
           )}
           aria-hidden="true"
         >
@@ -501,7 +565,7 @@ function PreviewProject({ project, isBento }: PreviewProjectProps) {
   return (
     <Link
       className={cn(
-        "group flex min-w-0 flex-col overflow-hidden rounded-3xl border border-[#eae6ef] bg-white text-inherit transition-[transform,border-color,box-shadow] duration-250 ease-in-out hover:-translate-y-1 hover:border-[#cdb8ef] hover:shadow-[0_18px_42px_rgba(53,31,80,0.09)]",
+        "group border-portfolio-border-soft hover:border-portfolio-border-hover hover:shadow-portfolio-card flex min-w-0 flex-col overflow-hidden rounded-3xl border bg-white text-inherit transition-[transform,border-color,box-shadow] duration-250 ease-in-out hover:-translate-y-1",
         getProjectLayoutClass(project.slug, isBento),
       )}
       data-project={project.slug}
@@ -511,8 +575,8 @@ function PreviewProject({ project, isBento }: PreviewProjectProps) {
     >
       <div
         className={cn(
-          "flex min-h-0 flex-1 items-center justify-center overflow-hidden bg-[#ede7fa]",
-          project.project.imageFit === "contain" && "bg-[#edf2e9] p-7",
+          "bg-portfolio-tint flex min-h-0 flex-1 items-center justify-center overflow-hidden",
+          project.project.imageFit === "contain" && "bg-portfolio-media p-7",
         )}
       >
         <img
@@ -531,12 +595,12 @@ function PreviewProject({ project, isBento }: PreviewProjectProps) {
             <h3 className="font-display text-[22px] leading-tight font-semibold tracking-[-0.8px]">
               {project.title}
             </h3>
-            <p className="mt-1 text-sm leading-normal text-[#675d73]">
+            <p className="text-portfolio-copy-muted mt-1 text-sm leading-normal">
               {project.summary}
             </p>
           </div>
           <ArrowUpRight
-            className="mt-[3px] shrink-0 text-[#7c3aed] transition-transform duration-200 group-hover:translate-x-[3px] group-hover:-translate-y-[3px]"
+            className="text-portfolio-brand mt-[3px] shrink-0 transition-transform duration-200 group-hover:translate-x-[3px] group-hover:-translate-y-[3px]"
             aria-hidden="true"
           />
         </div>
@@ -547,7 +611,7 @@ function PreviewProject({ project, isBento }: PreviewProjectProps) {
           {project.project.technologies.map((technology) => (
             <span
               key={technology.label}
-              className="inline-flex h-[30px] w-[30px] items-center justify-center rounded-lg bg-[#f0e9fb] text-[#6f2bd7] [&_svg]:h-[15px] [&_svg]:w-[15px] [&_svg]:fill-current"
+              className="bg-portfolio-tint-soft text-portfolio-brand-strong inline-flex h-[30px] w-[30px] items-center justify-center rounded-lg [&_svg]:h-[15px] [&_svg]:w-[15px] [&_svg]:fill-current"
               title={technology.label}
               aria-label={technology.label}
             >
