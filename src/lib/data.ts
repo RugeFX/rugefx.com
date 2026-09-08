@@ -3,18 +3,13 @@ import {
   SiRadixui,
   SiNextdotjs,
   SiTailwindcss,
-  SiJavascript,
   SiReact,
-  SiRedux,
   SiShadcnui,
   SiFramer,
   SiExpo,
   SiGithubactions,
 } from "@icons-pack/react-simple-icons";
 import icon from "../assets/RugeFX.png";
-import forum from "../assets/RugeForum.png";
-import personalNotes from "../assets/PersonalNotesIcon.png";
-import bookshelf from "../assets/BookshelfRuge.png";
 import qurbanAsyik from "../assets/QurbanAsyik.png";
 import sattu from "../assets/Sattu.png";
 import sga from "../assets/SGA.png";
@@ -215,71 +210,6 @@ export const projects: Project[] = [
       {
         label: "Framer Motion",
         icon: SiFramer,
-      },
-    ],
-  },
-  {
-    title: "Ruge Forum",
-    category: "Web Apps",
-    description:
-      "A fully-functional forum app made for the last submission of Dicoding's React Expert course. Built with Typescript, React, Vite, Redux & Toolkit, Tailwind CSS, Radix, and SlateJS",
-    imageSrc: forum,
-    siteUrl: "https://forum.rugefx.com",
-    repositoryUrl: "https://github.com/RugeFX/ruge-forum",
-    technologies: [
-      {
-        label: "React",
-        icon: SiReact,
-      },
-      {
-        label: "Redux",
-        icon: SiRedux,
-      },
-      {
-        label: "Radix UI",
-        icon: SiRadixui,
-      },
-      {
-        label: "Tailwind",
-        icon: SiTailwindcss,
-      },
-    ],
-  },
-  {
-    title: "Ruge Personal Notes",
-    category: "Web Apps",
-    description:
-      "A simple note-taking app made for the last submission of Dicoding's React Fundamentals course. Built with Javascript, React, Vite, Tailwind CSS, and Material Tailwind",
-    siteUrl: "https://personal-notes.rugefx.com/",
-    repositoryUrl: "https://github.com/RugeFX/ruge-personal-notes",
-    imageSrc: personalNotes,
-    technologies: [
-      {
-        label: "React",
-        icon: SiReact,
-      },
-      {
-        label: "Tailwind",
-        icon: SiTailwindcss,
-      },
-    ],
-  },
-  {
-    title: "Ruge Bookshelf",
-    category: "Web Apps",
-    description:
-      "A books organizer app made for the submission of Dicoding's Front-end course. Built with HTML, Javascript, and Tailwind CSS",
-    siteUrl: "https://rugefx.github.io/ruge-bookshelf",
-    repositoryUrl: "https://github.com/RugeFX/ruge-bookshelf",
-    imageSrc: bookshelf,
-    technologies: [
-      {
-        label: "Javascript",
-        icon: SiJavascript,
-      },
-      {
-        label: "Tailwind",
-        icon: SiTailwindcss,
       },
     ],
   },

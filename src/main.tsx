@@ -1,17 +1,27 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import App from "./App";
+import { createRouter, RouterProvider } from "@tanstack/react-router";
+import { routeTree } from "./routeTree.gen";
 import "./index.css";
-import ThemeProvider from "./contexts/theme-provider";
+
+const router = createRouter({
+  routeTree,
+  defaultPreload: "intent",
+  scrollRestoration: true,
+});
+
+declare module "@tanstack/react-router" {
+  interface Register {
+    router: typeof router;
+  }
+}
 
 const rootElement = document.getElementById("root")!;
 if (!rootElement.innerHTML) {
   const root = ReactDOM.createRoot(rootElement);
   root.render(
     <React.StrictMode>
-      <ThemeProvider defaultTheme="system">
-        <App />
-      </ThemeProvider>
+      <RouterProvider router={router} />
     </React.StrictMode>,
   );
 }
