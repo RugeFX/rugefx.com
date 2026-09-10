@@ -1,10 +1,12 @@
 import { useEffect, useId, useRef, useState } from "react";
 import {
+  MotionConfig,
   motion,
   useReducedMotion,
   useScroll,
   useTransform,
   type MotionValue,
+  type Variants,
 } from "motion/react";
 import { ArrowDown, ArrowUpRight, Menu, X, Linkedin } from "lucide-react";
 import { SiGithub, SiX } from "@icons-pack/react-simple-icons";
@@ -25,7 +27,7 @@ const sectionTitleClass =
   "font-display text-[44px] leading-[1.15] font-semibold tracking-[-2px] max-[760px]:text-[35px]";
 const heroCardClass = "rounded-[25px]";
 const socialCardClass =
-  "relative min-h-[180px] min-w-0 overflow-hidden rounded-[25px] px-[30px] py-[26px] transition-transform duration-200 hover:-translate-y-1 max-[1120px]:min-h-[170px] max-[760px]:min-h-[158px] max-[760px]:p-6 max-[480px]:p-[22px]";
+  "relative flex h-full min-h-[180px] min-w-0 flex-col overflow-hidden rounded-[25px] px-[30px] py-[26px] transition-transform duration-200 hover:-translate-y-1 max-[1120px]:min-h-[170px] max-[760px]:min-h-[158px] max-[760px]:p-6 max-[480px]:p-[22px]";
 const portfolioRootClass =
   "bg-portfolio-canvas text-portfolio-ink min-h-screen font-sans [&_a]:no-underline [&_a:focus-visible]:outline-[3px] [&_a:focus-visible]:outline-offset-[5px] [&_a:focus-visible]:outline-portfolio-focus [&_button:focus-visible]:outline-[3px] [&_button:focus-visible]:outline-offset-[5px] [&_button:focus-visible]:outline-portfolio-focus motion-reduce:[&_*]:scroll-auto motion-reduce:[&_*]:animate-none motion-reduce:[&_*]:transition-none";
 const experienceStackClass =
@@ -35,12 +37,79 @@ const experienceStageClass =
 const experienceCardClass =
   "absolute inset-x-0 top-0 min-h-[470px] rounded-[25px] border border-portfolio-stack-border bg-white text-portfolio-ink shadow-portfolio-stack before:absolute before:top-[31px] before:left-[-45px] before:size-[15px] before:rounded-full before:border-2 before:border-portfolio-brand before:bg-portfolio-canvas before:shadow-portfolio-timeline-dot max-[760px]:min-h-[580px] max-[760px]:before:top-[34px] max-[760px]:before:left-[-34px] max-[760px]:before:size-[13px] max-[480px]:min-h-[600px] max-[480px]:rounded-[20px] max-[480px]:before:hidden max-[360px]:relative max-[360px]:inset-auto max-[360px]:mb-5 max-[360px]:min-h-0 max-[360px]:transform-none! short-viewport:relative short-viewport:inset-auto short-viewport:mb-5 short-viewport:min-h-0 short-viewport:transform-none! motion-reduce:relative motion-reduce:inset-auto motion-reduce:mb-5 motion-reduce:min-h-0 motion-reduce:transform-none!";
 
+interface HeroCardMotion {
+  bounce: number;
+  delay: number;
+  duration: number;
+}
+
+const heroRevealEase: [number, number, number, number] = [0.19, 1, 0.22, 1];
+const heroCardVariants: Variants = {
+  hidden: {
+    opacity: 0,
+    transform: "scale(0.975)",
+  },
+  visible: ({ bounce, delay, duration }: HeroCardMotion) => ({
+    opacity: 1,
+    transform: "scale(1)",
+    transition: {
+      opacity: { delay, duration: 0.22, ease: heroRevealEase },
+      transform: { bounce, delay, duration, type: "spring" },
+    },
+  }),
+};
+const heroTextVariants: Variants = {
+  hidden: { opacity: 0 },
+  visible: (delay: number) => ({
+    opacity: 1,
+    transition: { delay, duration: 0.22, ease: heroRevealEase },
+  }),
+};
+const desktopHeroDelays = {
+  main: 0,
+  about: 0.06,
+  github: 0.1,
+  linkedin: 0.14,
+  x: 0.18,
+  location: 0.22,
+  current: 0.26,
+};
+const stackedHeroDelays = {
+  main: 0,
+  github: 0.06,
+  linkedin: 0.1,
+  x: 0.14,
+  about: 0.18,
+  location: 0.22,
+  current: 0.26,
+};
+
+let hasPlayedHeroEntrance = false;
+
 export default function PortfolioSite() {
   const [category, setCategory] = useState<(typeof categories)[number]>("All");
   const [menuOpen, setMenuOpen] = useState(false);
+  const [shouldPlayHeroEntrance] = useState(() => !hasPlayedHeroEntrance);
+  const [usesStackedHeroLayout] = useState(
+    () => window.matchMedia("(max-width: 1120px)").matches,
+  );
+  const shouldReduceHeroMotion = useReducedMotion();
+  const shouldAnimateHeroCards =
+    shouldPlayHeroEntrance && !shouldReduceHeroMotion;
+  const heroCardInitial = shouldAnimateHeroCards ? "hidden" : false;
+  const heroDelays = usesStackedHeroLayout
+    ? stackedHeroDelays
+    : desktopHeroDelays;
   const visibleProjects = presentedProjects.filter(
     ({ project }) => category === "All" || project.category === category,
   );
+
+  useEffect(() => {
+    if (shouldPlayHeroEntrance) {
+      hasPlayedHeroEntrance = true;
+    }
+  }, [shouldPlayHeroEntrance]);
+
   return (
     <div className={portfolioRootClass}>
       <div className="mx-auto max-w-[1280px] px-8 max-[1120px]:px-6 max-[760px]:px-[18px] max-[480px]:px-[14px]">
@@ -85,144 +154,247 @@ export default function PortfolioSite() {
           </button>
         </header>
         <main>
-          <section
-            id="home"
-            className="grid scroll-mt-6 grid-cols-[1.15fr_1fr] gap-[22px] max-[1120px]:grid-cols-1 max-[760px]:gap-4"
-            aria-label="Introduction"
-          >
-            <div className="flex min-w-0 flex-col gap-5 max-[760px]:gap-4">
-              <div
-                className={cn(
-                  heroCardClass,
-                  "bg-portfolio-brand flex-1 p-12 text-white max-[1120px]:p-[clamp(36px,6vw,56px)] max-[760px]:px-[30px] max-[760px]:py-[34px] max-[480px]:px-6 max-[480px]:py-[30px] min-[1121px]:min-h-[540px]",
-                )}
-              >
-                <h1 className="font-display mb-[35px] text-[clamp(65px,7.8vw,108px)] leading-[1.02] font-semibold tracking-[-7px] max-[1120px]:text-[clamp(76px,11vw,108px)] max-[1120px]:tracking-[-6px] max-[760px]:mb-[25px] max-[760px]:text-[clamp(66px,16vw,92px)] max-[760px]:tracking-[-4px] max-[480px]:text-[clamp(58px,18vw,78px)] max-[480px]:tracking-[-3px]">
-                  Ahmad
-                  <br />
-                  Zacky<span>.</span>
-                </h1>
-                <h2 className="mb-6 text-[26px] font-medium tracking-[-1px] max-[760px]:text-2xl">
-                  Software engineer
-                </h2>
-                <p className="text-portfolio-on-brand text-[21px] leading-[1.55] max-[760px]:text-[19px]">
-                  Building web, mobile, and
-                  <br className="desktop-break" /> connected systems.
-                </p>
-                <div className="mt-[42px] flex flex-wrap gap-3.5 max-[1120px]:gap-2.5 max-[760px]:mt-8 max-[480px]:grid max-[480px]:grid-cols-1">
-                  <a
-                    className="text-portfolio-ink inline-flex items-center justify-center gap-3 rounded-[40px] border border-white bg-white px-6 py-[17px] text-sm max-[1120px]:px-[18px] max-[1120px]:py-3.5 max-[480px]:w-full"
-                    href="mailto:zackfxg@gmail.com"
+          <MotionConfig reducedMotion="user">
+            <motion.section
+              id="home"
+              className="grid scroll-mt-6 grid-cols-[1.15fr_1fr] gap-[22px] max-[1120px]:grid-cols-1 max-[760px]:gap-4"
+              aria-label="Introduction"
+              initial={
+                shouldPlayHeroEntrance && shouldReduceHeroMotion
+                  ? { opacity: 0 }
+                  : false
+              }
+              animate={
+                shouldPlayHeroEntrance && shouldReduceHeroMotion
+                  ? { opacity: 1 }
+                  : undefined
+              }
+              transition={{ duration: 0.15, ease: heroRevealEase }}
+            >
+              <div className="flex min-w-0 flex-col gap-5 max-[760px]:gap-4">
+                <motion.div
+                  className={cn(
+                    heroCardClass,
+                    "bg-portfolio-brand flex-1 p-12 text-white max-[1120px]:p-[clamp(36px,6vw,56px)] max-[760px]:px-[30px] max-[760px]:py-[34px] max-[480px]:px-6 max-[480px]:py-[30px] min-[1121px]:min-h-[540px]",
+                  )}
+                  data-hero-motion="main"
+                  variants={heroCardVariants}
+                  initial={heroCardInitial}
+                  animate="visible"
+                  custom={{
+                    bounce: 0.1,
+                    delay: heroDelays.main,
+                    duration: 0.52,
+                  }}
+                >
+                  <motion.h1
+                    className="font-display mb-[35px] text-[clamp(65px,7.8vw,108px)] leading-[1.02] font-semibold tracking-[-7px] max-[1120px]:text-[clamp(76px,11vw,108px)] max-[1120px]:tracking-[-6px] max-[760px]:mb-[25px] max-[760px]:text-[clamp(66px,16vw,92px)] max-[760px]:tracking-[-4px] max-[480px]:text-[clamp(58px,18vw,78px)] max-[480px]:tracking-[-3px]"
+                    variants={heroTextVariants}
+                    initial={heroCardInitial}
+                    animate="visible"
+                    custom={0.08}
                   >
-                    Get in touch <ArrowUpRight size={18} />
-                  </a>
-                  <a
-                    className="border-portfolio-brand-outline inline-flex items-center justify-center gap-3 rounded-[40px] border bg-transparent px-6 py-[17px] text-sm text-white max-[1120px]:px-[18px] max-[1120px]:py-3.5 max-[480px]:w-full"
-                    href={resume}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    View resume
-                  </a>
-                </div>
-              </div>
-              <div className="grid grid-cols-3 gap-5 max-[760px]:grid-cols-2 max-[760px]:gap-4">
-                <a
-                  className={cn(
-                    socialCardClass,
-                    "bg-portfolio-ink-strong text-white",
-                  )}
-                  href="https://github.com/RugeFX"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  <SiGithub size={38} aria-hidden="true" />
-                  <ArrowUpRight className="absolute top-[27px] right-[25px]" />
-                  <h2 className="mt-[18px] mb-1 text-[23px] font-medium tracking-[-0.8px] max-[480px]:text-xl">
-                    GitHub
-                  </h2>
-                  <span className="text-portfolio-on-dark-muted text-sm">
-                    RugeFX
-                  </span>
-                </a>
-                <a
-                  className={cn(
-                    socialCardClass,
-                    "bg-portfolio-tint text-portfolio-brand-strong",
-                  )}
-                  href="https://linkedin.com/in/rugefx"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  <Linkedin size={38} aria-hidden="true" />
-                  <ArrowUpRight className="absolute top-[27px] right-[25px]" />
-                  <h2 className="text-portfolio-ink mt-[18px] mb-1 text-[23px] font-medium tracking-[-0.8px] max-[480px]:text-xl">
-                    LinkedIn
-                  </h2>
-                  <span className="text-sm">Ahmad Zacky</span>
-                </a>
-                <a
-                  className={cn(
-                    socialCardClass,
-                    "border-portfolio-border text-portfolio-ink border bg-white max-[760px]:col-span-2 max-[760px]:min-h-[140px]",
-                  )}
-                  href="https://twitter.com/RugeDev"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  <SiX size={34} aria-hidden="true" />
-                  <ArrowUpRight className="absolute top-[27px] right-[25px]" />
-                  <h2 className="mt-[18px] mb-1 text-[23px] font-medium tracking-[-0.8px] max-[480px]:text-xl">
-                    X
-                  </h2>
-                  <span className="text-portfolio-copy-muted text-sm">
-                    @RugeDev
-                  </span>
-                </a>
-              </div>
-            </div>
-            <div className="flex min-w-0 flex-col gap-5 max-[760px]:gap-4">
-              <div className="border-portfolio-border-soft flex-1 rounded-[25px] border bg-white p-11 max-[1120px]:p-[clamp(34px,5vw,52px)] max-[760px]:p-[30px]">
-                <h2 className="font-display mb-7 text-[33px] font-semibold tracking-[-1.3px] max-[1120px]:text-[32px] max-[760px]:text-[28px]">
-                  A bit about me.
-                </h2>
-                <p className="mb-[26px] text-[21px] leading-[1.6] last:mb-0 max-[1120px]:max-w-[38ch] max-[1120px]:text-xl max-[760px]:max-w-none max-[760px]:text-lg">
-                  I'm a primarily self-taught developer based in Bekasi,
-                  Indonesia.
-                </p>
-                <p className="mb-[26px] text-[21px] leading-[1.6] last:mb-0 max-[1120px]:max-w-[38ch] max-[1120px]:text-xl max-[760px]:max-w-none max-[760px]:text-lg">
-                  My work spans mobile commerce apps, websites, and operational
-                  dashboards that connect with on-site devices.
-                </p>
-              </div>
-              <div className="grid min-h-[260px] flex-1 grid-cols-2 gap-5 max-[1120px]:min-h-[280px] max-[760px]:min-h-[235px] max-[760px]:gap-4 max-[480px]:min-h-0 max-[480px]:flex-none max-[480px]:grid-cols-1">
-                <div className="bg-portfolio-tint relative flex flex-col overflow-hidden rounded-[25px] p-[27px] max-[1120px]:p-[30px] max-[760px]:p-[22px] max-[480px]:min-h-[220px]">
-                  <h2 className="text-[23px] leading-[1.4] font-medium tracking-[-0.8px] max-[760px]:text-[21px]">
-                    Bekasi,
+                    Ahmad
                     <br />
-                    Indonesia
-                  </h2>
-                  <div className="relative min-h-[140px] flex-1">
-                    <IndonesiaLocationMap />
-                  </div>
+                    Zacky<span>.</span>
+                  </motion.h1>
+                  <motion.div
+                    variants={heroTextVariants}
+                    initial={heroCardInitial}
+                    animate="visible"
+                    custom={0.15}
+                  >
+                    <h2 className="mb-6 text-[26px] font-medium tracking-[-1px] max-[760px]:text-2xl">
+                      Software engineer
+                    </h2>
+                    <p className="text-portfolio-on-brand text-[21px] leading-[1.55] max-[760px]:text-[19px]">
+                      Building web, mobile, and
+                      <br className="desktop-break" /> connected systems.
+                    </p>
+                    <div className="mt-[42px] flex flex-wrap gap-3.5 max-[1120px]:gap-2.5 max-[760px]:mt-8 max-[480px]:grid max-[480px]:grid-cols-1">
+                      <a
+                        className="text-portfolio-ink inline-flex items-center justify-center gap-3 rounded-[40px] border border-white bg-white px-6 py-[17px] text-sm max-[1120px]:px-[18px] max-[1120px]:py-3.5 max-[480px]:w-full"
+                        href="mailto:zackfxg@gmail.com"
+                      >
+                        Get in touch <ArrowUpRight size={18} />
+                      </a>
+                      <a
+                        className="border-portfolio-brand-outline inline-flex items-center justify-center gap-3 rounded-[40px] border bg-transparent px-6 py-[17px] text-sm text-white max-[1120px]:px-[18px] max-[1120px]:py-3.5 max-[480px]:w-full"
+                        href={resume}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        View resume
+                      </a>
+                    </div>
+                  </motion.div>
+                </motion.div>
+                <div className="grid grid-cols-3 gap-5 max-[760px]:grid-cols-2 max-[760px]:gap-4">
+                  <motion.div
+                    data-hero-motion="github"
+                    variants={heroCardVariants}
+                    initial={heroCardInitial}
+                    animate="visible"
+                    custom={{
+                      bounce: 0.12,
+                      delay: heroDelays.github,
+                      duration: 0.43,
+                    }}
+                  >
+                    <a
+                      className={cn(
+                        socialCardClass,
+                        "bg-portfolio-ink-strong text-white",
+                      )}
+                      href="https://github.com/RugeFX"
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      <SiGithub size={38} aria-hidden="true" />
+                      <ArrowUpRight className="absolute top-[27px] right-[25px]" />
+                      <h2 className="mt-[18px] mb-1 text-[23px] font-medium tracking-[-0.8px] max-[480px]:text-xl">
+                        GitHub
+                      </h2>
+                      <span className="text-portfolio-on-dark-muted text-sm">
+                        RugeFX
+                      </span>
+                    </a>
+                  </motion.div>
+                  <motion.div
+                    data-hero-motion="linkedin"
+                    variants={heroCardVariants}
+                    initial={heroCardInitial}
+                    animate="visible"
+                    custom={{
+                      bounce: 0.12,
+                      delay: heroDelays.linkedin,
+                      duration: 0.43,
+                    }}
+                  >
+                    <a
+                      className={cn(
+                        socialCardClass,
+                        "bg-portfolio-tint text-portfolio-brand-strong",
+                      )}
+                      href="https://linkedin.com/in/rugefx"
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      <Linkedin size={38} aria-hidden="true" />
+                      <ArrowUpRight className="absolute top-[27px] right-[25px]" />
+                      <h2 className="text-portfolio-ink mt-[18px] mb-1 text-[23px] font-medium tracking-[-0.8px] max-[480px]:text-xl">
+                        LinkedIn
+                      </h2>
+                      <span className="text-sm">Ahmad Zacky</span>
+                    </a>
+                  </motion.div>
+                  <motion.div
+                    className="max-[760px]:col-span-2"
+                    data-hero-motion="x"
+                    variants={heroCardVariants}
+                    initial={heroCardInitial}
+                    animate="visible"
+                    custom={{
+                      bounce: 0.12,
+                      delay: heroDelays.x,
+                      duration: 0.43,
+                    }}
+                  >
+                    <a
+                      className={cn(
+                        socialCardClass,
+                        "border-portfolio-border text-portfolio-ink border bg-white max-[760px]:min-h-[140px]",
+                      )}
+                      href="https://twitter.com/RugeDev"
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      <SiX size={34} aria-hidden="true" />
+                      <ArrowUpRight className="absolute top-[27px] right-[25px]" />
+                      <h2 className="mt-[18px] mb-1 text-[23px] font-medium tracking-[-0.8px] max-[480px]:text-xl">
+                        X
+                      </h2>
+                      <span className="text-portfolio-copy-muted text-sm">
+                        @RugeDev
+                      </span>
+                    </a>
+                  </motion.div>
                 </div>
-                <a
-                  className="bg-portfolio-ink-strong flex flex-col rounded-[25px] p-7 text-white max-[1120px]:p-[30px] max-[760px]:p-[22px] max-[480px]:min-h-[220px]"
-                  href="#experience"
-                >
-                  <h2 className="text-[23px] leading-[1.4] font-medium tracking-[-0.8px] max-[760px]:text-[21px]">
-                    Currently
-                  </h2>
-                  <p className="my-5 mb-8 text-[22px] leading-normal max-[1120px]:max-w-[22ch] max-[760px]:text-[19px]">
-                    Building operational tools at Nauchara.
-                  </p>
-                  <span className="text-portfolio-on-dark-accent mt-auto flex items-center gap-1.5 text-sm max-[760px]:text-xs">
-                    My experience <ArrowUpRight size={17} />
-                  </span>
-                </a>
               </div>
-            </div>
-          </section>
+              <div className="flex min-w-0 flex-col gap-5 max-[760px]:gap-4">
+                <motion.div
+                  className="border-portfolio-border-soft flex-1 rounded-[25px] border bg-white p-11 max-[1120px]:p-[clamp(34px,5vw,52px)] max-[760px]:p-[30px]"
+                  data-hero-motion="about"
+                  variants={heroCardVariants}
+                  initial={heroCardInitial}
+                  animate="visible"
+                  custom={{
+                    bounce: 0.1,
+                    delay: heroDelays.about,
+                    duration: 0.52,
+                  }}
+                >
+                  <h2 className="font-display mb-7 text-[33px] font-semibold tracking-[-1.3px] max-[1120px]:text-[32px] max-[760px]:text-[28px]">
+                    A bit about me.
+                  </h2>
+                  <p className="mb-[26px] text-[21px] leading-[1.6] last:mb-0 max-[1120px]:max-w-[38ch] max-[1120px]:text-xl max-[760px]:max-w-none max-[760px]:text-lg">
+                    I'm a primarily self-taught developer based in Bekasi,
+                    Indonesia.
+                  </p>
+                  <p className="mb-[26px] text-[21px] leading-[1.6] last:mb-0 max-[1120px]:max-w-[38ch] max-[1120px]:text-xl max-[760px]:max-w-none max-[760px]:text-lg">
+                    My work spans mobile commerce apps, websites, and
+                    operational dashboards that connect with on-site devices.
+                  </p>
+                </motion.div>
+                <div className="grid min-h-[260px] flex-1 grid-cols-2 gap-5 max-[1120px]:min-h-[280px] max-[760px]:min-h-[235px] max-[760px]:gap-4 max-[480px]:min-h-0 max-[480px]:flex-none max-[480px]:grid-cols-1">
+                  <motion.div
+                    className="bg-portfolio-tint relative flex flex-col overflow-hidden rounded-[25px] p-[27px] max-[1120px]:p-[30px] max-[760px]:p-[22px] max-[480px]:min-h-[220px]"
+                    data-hero-motion="location"
+                    variants={heroCardVariants}
+                    initial={heroCardInitial}
+                    animate="visible"
+                    custom={{
+                      bounce: 0.12,
+                      delay: heroDelays.location,
+                      duration: 0.43,
+                    }}
+                  >
+                    <h2 className="text-[23px] leading-[1.4] font-medium tracking-[-0.8px] max-[760px]:text-[21px]">
+                      Bekasi,
+                      <br />
+                      Indonesia
+                    </h2>
+                    <div className="relative min-h-[140px] flex-1">
+                      <IndonesiaLocationMap />
+                    </div>
+                  </motion.div>
+                  <motion.a
+                    className="bg-portfolio-ink-strong flex flex-col rounded-[25px] p-7 text-white max-[1120px]:p-[30px] max-[760px]:p-[22px] max-[480px]:min-h-[220px]"
+                    href="#experience"
+                    data-hero-motion="current"
+                    variants={heroCardVariants}
+                    initial={heroCardInitial}
+                    animate="visible"
+                    custom={{
+                      bounce: 0.12,
+                      delay: heroDelays.current,
+                      duration: 0.43,
+                    }}
+                  >
+                    <h2 className="text-[23px] leading-[1.4] font-medium tracking-[-0.8px] max-[760px]:text-[21px]">
+                      Currently
+                    </h2>
+                    <p className="my-5 mb-8 text-[22px] leading-normal max-[1120px]:max-w-[22ch] max-[760px]:text-[19px]">
+                      Building operational tools at Nauchara.
+                    </p>
+                    <span className="text-portfolio-on-dark-accent mt-auto flex items-center gap-1.5 text-sm max-[760px]:text-xs">
+                      My experience <ArrowUpRight size={17} />
+                    </span>
+                  </motion.a>
+                </div>
+              </div>
+            </motion.section>
+          </MotionConfig>
           <div className="mt-[75px] max-[760px]:mt-[45px]">
             <AboutSection />
           </div>
