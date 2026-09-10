@@ -1,5 +1,6 @@
 import { useEffect, useId, useRef, useState } from "react";
 import {
+  AnimatePresence,
   MotionConfig,
   motion,
   useReducedMotion,
@@ -8,7 +9,14 @@ import {
   type MotionValue,
   type Variants,
 } from "motion/react";
-import { ArrowDown, ArrowUpRight, Menu, X, Linkedin } from "lucide-react";
+import {
+  ArrowDown,
+  ArrowRight,
+  ArrowUpRight,
+  Menu,
+  X,
+  Linkedin,
+} from "lucide-react";
 import { SiGithub, SiX } from "@icons-pack/react-simple-icons";
 import { Link } from "@tanstack/react-router";
 import indonesiaMap from "@/assets/indonesia.svg";
@@ -23,6 +31,11 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { cn } from "@/lib/utils";
 
 const categories = ["All", "Mobile", "Websites"] as const;
+const navigationItems = [
+  ["About", "about"],
+  ["Experience", "experience"],
+  ["Work", "projects"],
+] as const;
 const resume =
   "https://docs.google.com/document/d/1Fh4tgO5LSXGCdzDGPtST5pniM-a08Ar-O8dW1SvMmDY/edit?usp=sharing";
 const sectionTitleClass =
@@ -91,6 +104,11 @@ let hasPlayedHeroEntrance = false;
 export default function PortfolioSite() {
   const [category, setCategory] = useState<(typeof categories)[number]>("All");
   const [menuOpen, setMenuOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState(
+    () => window.location.hash.slice(1) || "home",
+  );
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
+  const pendingSectionRef = useRef<string | null>(null);
   const [shouldPlayHeroEntrance] = useState(() => !hasPlayedHeroEntrance);
   const [usesStackedHeroLayout] = useState(
     () => window.matchMedia("(max-width: 1120px)").matches,
@@ -112,50 +130,194 @@ export default function PortfolioSite() {
     }
   }, [shouldPlayHeroEntrance]);
 
+  useEffect(() => {
+    const updateActiveSection = () => {
+      setActiveSection(window.location.hash.slice(1) || "home");
+    };
+
+    window.addEventListener("hashchange", updateActiveSection);
+    return () => window.removeEventListener("hashchange", updateActiveSection);
+  }, []);
+
+  useEffect(() => {
+    if (!menuOpen) return;
+
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key !== "Escape") return;
+      setMenuOpen(false);
+      menuButtonRef.current?.focus();
+    };
+
+    window.addEventListener("keydown", closeOnEscape);
+    return () => window.removeEventListener("keydown", closeOnEscape);
+  }, [menuOpen]);
+
+  const closeMenuThenScroll = (sectionId: string) => {
+    pendingSectionRef.current = sectionId;
+    setMenuOpen(false);
+  };
+
+  const completeMobileNavigation = () => {
+    const sectionId = pendingSectionRef.current;
+    if (!sectionId) return;
+
+    pendingSectionRef.current = null;
+    window.requestAnimationFrame(() => {
+      window.history.pushState(null, "", `#${sectionId}`);
+      setActiveSection(sectionId);
+      document.getElementById(sectionId)?.scrollIntoView({
+        behavior: shouldReduceHeroMotion ? "auto" : "smooth",
+        block: "start",
+      });
+    });
+  };
+
   return (
     <div className={portfolioRootClass}>
       <div className="mx-auto max-w-[1280px] px-8 max-[1120px]:px-6 max-[760px]:px-[18px] max-[480px]:px-[14px]">
-        <header className="relative flex h-28 items-center justify-between max-[760px]:h-[88px]">
+        <header
+          className={cn(
+            "border-portfolio-border-soft relative mt-4 mb-5 flex h-[76px] items-center justify-between rounded-[24px] border bg-white px-5 pl-7",
+            "max-[760px]:mt-3 max-[760px]:mb-4 max-[760px]:grid max-[760px]:h-auto max-[760px]:grid-cols-[1fr_auto] max-[760px]:px-3 max-[760px]:py-3 max-[760px]:pl-5",
+            menuOpen && "max-[760px]:shadow-portfolio-card",
+          )}
+        >
           <a
             href="#home"
-            className="font-display text-[32px] font-bold tracking-[-2px] max-[760px]:text-[28px]"
+            className="font-display text-[28px] font-bold tracking-[-2px]"
+            onClick={(event) => {
+              if (!menuOpen) return;
+              event.preventDefault();
+              closeMenuThenScroll("home");
+            }}
           >
             RugeFX
           </a>
           <nav
             aria-label="Main navigation"
-            className={cn(
-              "hidden gap-[38px] text-sm min-[761px]:flex",
-              menuOpen &&
-                "max-[760px]:border-portfolio-border-soft max-[760px]:absolute max-[760px]:inset-x-0 max-[760px]:top-[75px] max-[760px]:z-10 max-[760px]:flex max-[760px]:justify-between max-[760px]:gap-2.5 max-[760px]:rounded-[18px] max-[760px]:border max-[760px]:bg-white max-[760px]:p-6",
-            )}
+            className="hidden items-center gap-1 text-sm min-[760px]:flex"
           >
-            {[
-              ["About", "about"],
-              ["Experience", "experience"],
-              ["Work", "projects"],
-            ].map(([label, id]) => (
-              <a key={id} href={`#${id}`} onClick={() => setMenuOpen(false)}>
-                {label}
-              </a>
-            ))}
+            {navigationItems.map(([label, id]) => {
+              const isActive = activeSection === id;
+
+              return (
+                <a
+                  key={id}
+                  href={`#${id}`}
+                  aria-current={isActive ? "location" : undefined}
+                  className={cn(
+                    "rounded-full px-4 py-2.5 font-medium transition-colors duration-150",
+                    isActive
+                      ? "bg-portfolio-tint text-portfolio-brand"
+                      : "text-portfolio-ink hover:bg-portfolio-canvas",
+                  )}
+                >
+                  {label}
+                </a>
+              );
+            })}
           </nav>
-          <a
-            className="text-portfolio-brand flex items-center gap-3 text-sm max-[760px]:mr-5 max-[760px]:ml-auto max-[480px]:mr-3.5"
+          <LinkButton
+            size="sm"
+            className="h-10 gap-2.5 px-4 max-[760px]:hidden"
             href="mailto:zackfxg@gmail.com"
           >
-            Contact <ArrowUpRight size={19} />
-          </a>
+            Contact me
+            <ArrowUpRight
+              size={17}
+              data-icon="inline-end"
+              data-direction="diagonal"
+            />
+          </LinkButton>
           <Button
             variant="ghost"
             size="icon"
-            className="hidden max-[760px]:block"
+            ref={menuButtonRef}
+            className="text-portfolio-brand max-[760px]:bg-portfolio-tint max-[760px]:data-hovered:bg-portfolio-tint-active hidden max-[760px]:flex max-[760px]:size-12"
             aria-label={menuOpen ? "Close navigation" : "Open navigation"}
             aria-expanded={menuOpen}
+            aria-controls="mobile-navigation"
             onPress={() => setMenuOpen(!menuOpen)}
           >
             {menuOpen ? <X /> : <Menu />}
           </Button>
+          <AnimatePresence
+            initial={false}
+            onExitComplete={completeMobileNavigation}
+          >
+            {menuOpen && (
+              <motion.nav
+                id="mobile-navigation"
+                aria-label="Mobile navigation"
+                className="col-span-2 hidden overflow-hidden max-[760px]:block"
+                initial={
+                  shouldReduceHeroMotion ? false : { height: 0, opacity: 0 }
+                }
+                animate={{ height: "auto", opacity: 1 }}
+                exit={
+                  shouldReduceHeroMotion
+                    ? { display: "none" }
+                    : { height: 0, opacity: 0 }
+                }
+                transition={
+                  shouldReduceHeroMotion
+                    ? { duration: 0 }
+                    : {
+                        height: { duration: 0.22, ease: heroRevealEase },
+                        opacity: { duration: 0.16, ease: "easeOut" },
+                      }
+                }
+              >
+                <div className="border-portfolio-border-soft mt-3 border-t pt-2">
+                  {navigationItems.map(([label, id]) => {
+                    const isActive = activeSection === id;
+
+                    return (
+                      <a
+                        key={id}
+                        href={`#${id}`}
+                        aria-current={isActive ? "location" : undefined}
+                        className={cn(
+                          "group/nav font-display flex min-h-14 items-center justify-between rounded-[15px] px-4 text-[18px] font-medium tracking-[-0.4px] transition-colors duration-150",
+                          isActive
+                            ? "bg-portfolio-tint text-portfolio-brand"
+                            : "text-portfolio-ink hover:bg-portfolio-canvas",
+                        )}
+                        onClick={(event) => {
+                          event.preventDefault();
+                          closeMenuThenScroll(id);
+                        }}
+                      >
+                        <span>{label}</span>
+                        {isActive ? (
+                          <span
+                            aria-hidden="true"
+                            className="bg-portfolio-brand size-2 rounded-full"
+                          />
+                        ) : (
+                          <ArrowRight
+                            aria-hidden="true"
+                            className="text-portfolio-copy-subtle size-[18px] transition-transform duration-150 group-hover/nav:translate-x-0.5"
+                          />
+                        )}
+                      </a>
+                    );
+                  })}
+                  <a
+                    className="group/contact bg-portfolio-brand font-display mt-2 flex min-h-14 items-center justify-between rounded-[15px] px-4 text-[18px] font-medium tracking-[-0.4px] text-white"
+                    href="mailto:zackfxg@gmail.com"
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    <span>Contact me</span>
+                    <ArrowUpRight
+                      aria-hidden="true"
+                      className="size-[18px] transition-transform duration-150 group-hover/contact:translate-x-0.5 group-hover/contact:-translate-y-0.5"
+                    />
+                  </a>
+                </div>
+              </motion.nav>
+            )}
+          </AnimatePresence>
         </header>
         <main>
           <MotionConfig reducedMotion="user">

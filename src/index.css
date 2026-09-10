@@ -193,6 +193,12 @@ layer(base);
   body {
     @apply scroll-smooth;
   }
+  @media (prefers-reduced-motion: reduce) {
+    html,
+    body {
+      scroll-behavior: auto;
+    }
+  }
   button:not(:disabled),
   [role="button"]:not(:disabled) {
     cursor: pointer;
