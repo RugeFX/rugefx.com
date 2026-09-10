@@ -1,5 +1,7 @@
 import { ArrowLeft, ArrowUpRight } from "lucide-react";
 import { Link } from "@tanstack/react-router";
+import { LinkButton } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button-variants";
 import { getPresentedProject } from "@/lib/project-presentation";
 
 interface ProjectDetailPageProps {
@@ -15,7 +17,7 @@ export default function ProjectDetailPage({
     return (
       <main className="grid min-h-screen place-content-center gap-5 text-center">
         <h1 className="font-display text-5xl">Project not found.</h1>
-        <Link className="text-portfolio-brand-strong" to="/">
+        <Link className={buttonVariants({ variant: "default" })} to="/">
           Return home
         </Link>
       </main>
@@ -93,38 +95,47 @@ export default function ProjectDetailPage({
             </p>
             <div className="col-start-2 flex flex-wrap gap-3 max-[900px]:col-start-1">
               {project.siteUrl && (
-                <a
-                  className="bg-portfolio-tint text-portfolio-brand-deep inline-flex items-center gap-2 rounded-full px-[15px] py-[11px] text-[13px]"
+                <LinkButton
+                  variant="secondary"
                   href={project.siteUrl}
                   target="_blank"
                   rel="noreferrer"
                 >
                   {project.siteLinkLabel ?? "Visit project"}
-                  <ArrowUpRight size={17} />
-                </a>
+                  <ArrowUpRight
+                    data-icon="inline-end"
+                    data-direction="diagonal"
+                  />
+                </LinkButton>
               )}
               {project.additionalLinks?.map((link) => (
-                <a
-                  className="bg-portfolio-tint text-portfolio-brand-deep inline-flex items-center gap-2 rounded-full px-[15px] py-[11px] text-[13px]"
+                <LinkButton
+                  variant="secondary"
                   key={link.url}
                   href={link.url}
                   target="_blank"
                   rel="noreferrer"
                 >
                   {link.label}
-                  <ArrowUpRight size={17} />
-                </a>
+                  <ArrowUpRight
+                    data-icon="inline-end"
+                    data-direction="diagonal"
+                  />
+                </LinkButton>
               ))}
               {project.repositoryUrl && (
-                <a
-                  className="bg-portfolio-tint text-portfolio-brand-deep inline-flex items-center gap-2 rounded-full px-[15px] py-[11px] text-[13px]"
+                <LinkButton
+                  variant="secondary"
                   href={project.repositoryUrl}
                   target="_blank"
                   rel="noreferrer"
                 >
                   Source code
-                  <ArrowUpRight size={17} />
-                </a>
+                  <ArrowUpRight
+                    data-icon="inline-end"
+                    data-direction="diagonal"
+                  />
+                </LinkButton>
               )}
             </div>
           </div>

@@ -1,4 +1,5 @@
 import { Link, Outlet, createRootRoute } from "@tanstack/react-router";
+import { buttonVariants } from "@/components/ui/button-variants";
 
 export const Route = createRootRoute({
   component: Outlet,
@@ -17,7 +18,10 @@ function NotFoundPage() {
         </p>
         <Link
           to="/"
-          className="bg-portfolio-brand mt-8 inline-flex rounded-full px-5 py-3 font-medium text-white"
+          className={buttonVariants({
+            variant: "default",
+            className: "mt-8",
+          })}
         >
           Return home
         </Link>

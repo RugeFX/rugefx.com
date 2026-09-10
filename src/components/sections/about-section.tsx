@@ -1,5 +1,6 @@
 import { Fragment, useState } from "react";
 import { ChevronDown, Code2, GraduationCap, UsersRound } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 const primarySkills = [
@@ -115,22 +116,23 @@ export default function AboutSection() {
           <h3 className="font-display text-[25px] font-semibold tracking-[-0.8px]">
             Tools I work with
           </h3>
-          <button
-            className="text-portfolio-brand-strong inline-flex cursor-pointer items-center gap-1.5 text-sm"
+          <Button
+            variant="link"
+            size="sm"
             type="button"
             aria-expanded={skillsOpen}
             aria-controls="full-skill-set"
-            onClick={() => setSkillsOpen((isOpen) => !isOpen)}
+            onPress={() => setSkillsOpen((isOpen) => !isOpen)}
           >
             {skillsOpen ? "Hide full skill set" : "Full skill set"}
             <ChevronDown
               className={cn(
-                "h-4 w-4 transition-transform duration-200",
+                "transition-transform duration-200",
                 skillsOpen && "rotate-180",
               )}
               aria-hidden="true"
             />
-          </button>
+          </Button>
         </div>
 
         <div className="text-portfolio-copy text-base leading-[1.8]">

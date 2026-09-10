@@ -2,6 +2,8 @@
 layer(base);
 
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
 @theme {
   --font-sans: Inter, sans-serif;
   --font-display: Space Grotesk, sans-serif;
@@ -190,5 +192,9 @@ layer(base);
   html,
   body {
     @apply scroll-smooth;
+  }
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
   }
 }

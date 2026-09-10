@@ -18,6 +18,8 @@ import {
   type PresentedProject,
 } from "@/lib/project-presentation";
 import AboutSection from "@/components/sections/about-section";
+import { Button, LinkButton } from "@/components/ui/button";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { cn } from "@/lib/utils";
 
 const categories = ["All", "Mobile", "Websites"] as const;
@@ -144,14 +146,16 @@ export default function PortfolioSite() {
           >
             Contact <ArrowUpRight size={19} />
           </a>
-          <button
+          <Button
+            variant="ghost"
+            size="icon"
             className="hidden max-[760px]:block"
             aria-label={menuOpen ? "Close navigation" : "Open navigation"}
             aria-expanded={menuOpen}
-            onClick={() => setMenuOpen(!menuOpen)}
+            onPress={() => setMenuOpen(!menuOpen)}
           >
             {menuOpen ? <X /> : <Menu />}
-          </button>
+          </Button>
         </header>
         <main>
           <MotionConfig reducedMotion="user">
@@ -212,20 +216,28 @@ export default function PortfolioSite() {
                       <br className="desktop-break" /> connected systems.
                     </p>
                     <div className="mt-[42px] flex flex-wrap gap-3.5 max-[1120px]:gap-2.5 max-[760px]:mt-8 max-[480px]:grid max-[480px]:grid-cols-1">
-                      <a
-                        className="text-portfolio-ink inline-flex items-center justify-center gap-3 rounded-[40px] border border-white bg-white px-6 py-[17px] text-sm max-[1120px]:px-[18px] max-[1120px]:py-3.5 max-[480px]:w-full"
+                      <LinkButton
+                        variant="inverse"
+                        size="lg"
+                        className="max-[1120px]:h-12 max-[1120px]:px-[18px] max-[480px]:w-full"
                         href="mailto:zackfxg@gmail.com"
                       >
-                        Get in touch <ArrowUpRight size={18} />
-                      </a>
-                      <a
-                        className="border-portfolio-brand-outline inline-flex items-center justify-center gap-3 rounded-[40px] border bg-transparent px-6 py-[17px] text-sm text-white max-[1120px]:px-[18px] max-[1120px]:py-3.5 max-[480px]:w-full"
+                        Get in touch
+                        <ArrowUpRight
+                          data-icon="inline-end"
+                          data-direction="diagonal"
+                        />
+                      </LinkButton>
+                      <LinkButton
+                        variant="inverse-outline"
+                        size="lg"
+                        className="max-[1120px]:h-12 max-[1120px]:px-[18px] max-[480px]:w-full"
                         href={resume}
                         target="_blank"
                         rel="noreferrer"
                       >
                         View resume
-                      </a>
+                      </LinkButton>
                     </div>
                   </motion.div>
                 </motion.div>
@@ -417,25 +429,38 @@ export default function PortfolioSite() {
           >
             <div className="mb-7 flex items-center justify-between gap-6 max-[760px]:flex-col max-[760px]:items-start">
               <h2 className={sectionTitleClass}>Selected work</h2>
-              <div
+              <ToggleGroup
                 className="flex flex-wrap gap-[5px] max-[480px]:gap-1"
                 aria-label="Filter projects"
+                selectionMode="single"
+                disallowEmptySelection
+                selectedKeys={[category]}
+                onSelectionChange={(keys) => {
+                  const selectedCategory = Array.from(keys)[0];
+
+                  if (
+                    typeof selectedCategory === "string" &&
+                    categories.includes(
+                      selectedCategory as (typeof categories)[number],
+                    )
+                  ) {
+                    setCategory(
+                      selectedCategory as (typeof categories)[number],
+                    );
+                  }
+                }}
               >
                 {categories.map((item) => (
-                  <button
-                    className={cn(
-                      "text-portfolio-copy-muted cursor-pointer rounded-[30px] px-3.5 py-[9px] text-[13px] max-[480px]:px-[11px] max-[480px]:py-2",
-                      category === item &&
-                        "bg-portfolio-tint-active text-portfolio-brand-deep",
-                    )}
+                  <ToggleGroupItem
+                    className="max-[480px]:px-[11px]"
                     key={item}
-                    aria-pressed={category === item}
-                    onClick={() => setCategory(item)}
+                    id={item}
+                    size="default"
                   >
                     {item}
-                  </button>
+                  </ToggleGroupItem>
                 ))}
-              </div>
+              </ToggleGroup>
             </div>
             <div
               className={cn(
