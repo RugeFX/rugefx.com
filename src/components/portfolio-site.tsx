@@ -3,6 +3,7 @@ import {
   AnimatePresence,
   MotionConfig,
   motion,
+  useAnimationControls,
   useReducedMotion,
   useScroll,
   useTransform,
@@ -27,7 +28,9 @@ import {
 } from "@/lib/project-presentation";
 import AboutSection from "@/components/sections/about-section";
 import { Button, LinkButton } from "@/components/ui/button";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { useTheme } from "@/contexts/theme-context";
 import { cn } from "@/lib/utils";
 
 const categories = ["All", "Mobile", "Websites"] as const;
@@ -44,13 +47,13 @@ const heroCardClass = "rounded-[25px]";
 const socialCardClass =
   "relative flex h-full min-h-[180px] min-w-0 flex-col overflow-hidden rounded-[25px] px-[30px] py-[26px] transition-transform duration-200 hover:-translate-y-1 max-[1120px]:min-h-[170px] max-[760px]:min-h-[158px] max-[760px]:p-6 max-[480px]:p-[22px]";
 const portfolioRootClass =
-  "bg-portfolio-canvas text-portfolio-ink min-h-screen font-sans [&_a]:no-underline [&_a:focus-visible]:outline-[3px] [&_a:focus-visible]:outline-offset-[5px] [&_a:focus-visible]:outline-portfolio-focus [&_button:focus-visible]:outline-[3px] [&_button:focus-visible]:outline-offset-[5px] [&_button:focus-visible]:outline-portfolio-focus motion-reduce:[&_*]:scroll-auto motion-reduce:[&_*]:animate-none motion-reduce:[&_*]:transition-none";
+  "bg-portfolio-canvas text-portfolio-ink min-h-screen flow-root font-sans [&_a]:no-underline [&_a:focus-visible]:outline-[3px] [&_a:focus-visible]:outline-offset-[5px] [&_a:focus-visible]:outline-portfolio-focus [&_button:focus-visible]:outline-[3px] [&_button:focus-visible]:outline-offset-[5px] [&_button:focus-visible]:outline-portfolio-focus motion-reduce:[&_*]:scroll-auto motion-reduce:[&_*]:animate-none motion-reduce:[&_*]:transition-none";
 const experienceStackClass =
   "relative h-[280svh] pl-[52px] max-[760px]:pl-9 max-[480px]:pl-0 max-[360px]:h-auto max-[360px]:pl-0 short-viewport:h-auto short-viewport:pl-0 motion-reduce:h-auto motion-reduce:pl-0";
 const experienceStageClass =
   "sticky top-(--experience-stack-top) h-[calc(100svh-var(--experience-stack-top)-15px)] before:absolute before:top-[38px] before:bottom-0 before:left-[-37px] before:w-px before:bg-portfolio-divider-strong max-[760px]:before:left-[-27px] max-[480px]:before:hidden max-[360px]:relative max-[360px]:top-auto max-[360px]:h-auto short-viewport:relative short-viewport:top-auto short-viewport:h-auto short-viewport:before:hidden motion-reduce:relative motion-reduce:top-auto motion-reduce:h-auto motion-reduce:before:hidden";
 const experienceCardClass =
-  "absolute inset-x-0 top-0 min-h-[470px] rounded-[25px] border border-portfolio-stack-border bg-white text-portfolio-ink shadow-portfolio-stack before:absolute before:top-[31px] before:left-[-45px] before:size-[15px] before:rounded-full before:border-2 before:border-portfolio-brand before:bg-portfolio-canvas before:shadow-portfolio-timeline-dot max-[760px]:min-h-[580px] max-[760px]:before:top-[34px] max-[760px]:before:left-[-34px] max-[760px]:before:size-[13px] max-[480px]:min-h-[600px] max-[480px]:rounded-[20px] max-[480px]:before:hidden max-[360px]:relative max-[360px]:inset-auto max-[360px]:mb-5 max-[360px]:min-h-0 max-[360px]:transform-none! short-viewport:relative short-viewport:inset-auto short-viewport:mb-5 short-viewport:min-h-0 short-viewport:transform-none! motion-reduce:relative motion-reduce:inset-auto motion-reduce:mb-5 motion-reduce:min-h-0 motion-reduce:transform-none!";
+  "absolute inset-x-0 top-0 min-h-[470px] rounded-[25px] border border-portfolio-stack-border bg-portfolio-surface text-portfolio-ink shadow-portfolio-stack before:absolute before:top-[31px] before:left-[-45px] before:size-[15px] before:rounded-full before:border-2 before:border-portfolio-brand before:bg-portfolio-canvas before:shadow-portfolio-timeline-dot max-[760px]:min-h-[580px] max-[760px]:before:top-[34px] max-[760px]:before:left-[-34px] max-[760px]:before:size-[13px] max-[480px]:min-h-[600px] max-[480px]:rounded-[20px] max-[480px]:before:hidden max-[360px]:relative max-[360px]:inset-auto max-[360px]:mb-5 max-[360px]:min-h-0 max-[360px]:transform-none! short-viewport:relative short-viewport:inset-auto short-viewport:mb-5 short-viewport:min-h-0 short-viewport:transform-none! motion-reduce:relative motion-reduce:inset-auto motion-reduce:mb-5 motion-reduce:min-h-0 motion-reduce:transform-none!";
 
 interface HeroCardMotion {
   bounce: number;
@@ -59,6 +62,31 @@ interface HeroCardMotion {
 }
 
 const heroRevealEase: [number, number, number, number] = [0.19, 1, 0.22, 1];
+const navbarRevealLeadIn = 0.06;
+const navbarContentVariants: Variants = {
+  hidden: { opacity: 1 },
+  visible: (delayChildren: number) => ({
+    opacity: 1,
+    transition: {
+      delayChildren,
+      staggerChildren: 0.045,
+    },
+  }),
+};
+const navbarItemVariants: Variants = {
+  hidden: {
+    opacity: 0,
+    transform: "scale(0.97)",
+  },
+  visible: {
+    opacity: 1,
+    transform: "scale(1)",
+    transition: {
+      duration: 0.22,
+      ease: heroRevealEase,
+    },
+  },
+};
 const heroCardVariants: Variants = {
   hidden: {
     opacity: 0,
@@ -108,18 +136,44 @@ export default function PortfolioSite() {
     () => window.location.hash.slice(1) || "home",
   );
   const menuButtonRef = useRef<HTMLButtonElement>(null);
+  const navbarShellRef = useRef<HTMLDivElement>(null);
   const pendingSectionRef = useRef<string | null>(null);
   const [shouldPlayHeroEntrance] = useState(() => !hasPlayedHeroEntrance);
+  const navbarRevealCompleteRef = useRef(!shouldPlayHeroEntrance);
+  const navbarShellAnimationControls = useAnimationControls();
+  const navbarContentAnimationControls = useAnimationControls();
   const [usesStackedHeroLayout] = useState(
     () => window.matchMedia("(max-width: 1120px)").matches,
   );
+  const [usesMobileNavbarLayout] = useState(
+    () => window.matchMedia("(max-width: 759.98px)").matches,
+  );
+  const [shouldReduceInitialMotion] = useState(
+    () => window.matchMedia("(prefers-reduced-motion: reduce)").matches,
+  );
   const shouldReduceHeroMotion = useReducedMotion();
   const shouldAnimateHeroCards =
-    shouldPlayHeroEntrance && !shouldReduceHeroMotion;
+    shouldPlayHeroEntrance && !shouldReduceInitialMotion;
   const heroCardInitial = shouldAnimateHeroCards ? "hidden" : false;
-  const heroDelays = usesStackedHeroLayout
+  const baseHeroDelays = usesStackedHeroLayout
     ? stackedHeroDelays
     : desktopHeroDelays;
+  const navbarRevealDuration = usesMobileNavbarLayout ? 0.44 : 0.54;
+  const navbarContentDelay =
+    navbarRevealLeadIn + (usesMobileNavbarLayout ? 0.14 : 0.18);
+  const heroStartDelay = usesMobileNavbarLayout ? 0.25 : 0.33;
+  const heroDelayOffset = shouldAnimateHeroCards
+    ? heroStartDelay + navbarRevealLeadIn
+    : 0;
+  const heroDelays = {
+    main: baseHeroDelays.main + heroDelayOffset,
+    about: baseHeroDelays.about + heroDelayOffset,
+    github: baseHeroDelays.github + heroDelayOffset,
+    linkedin: baseHeroDelays.linkedin + heroDelayOffset,
+    x: baseHeroDelays.x + heroDelayOffset,
+    location: baseHeroDelays.location + heroDelayOffset,
+    current: baseHeroDelays.current + heroDelayOffset,
+  };
   const visibleProjects = presentedProjects.filter(
     ({ project }) => category === "All" || project.category === category,
   );
@@ -129,6 +183,44 @@ export default function PortfolioSite() {
       hasPlayedHeroEntrance = true;
     }
   }, [shouldPlayHeroEntrance]);
+
+  useEffect(() => {
+    if (!shouldPlayHeroEntrance) return;
+
+    if (shouldReduceInitialMotion) {
+      void Promise.all([
+        navbarShellAnimationControls.start(
+          { opacity: 1 },
+          { duration: 0.15, ease: heroRevealEase },
+        ),
+        navbarContentAnimationControls.start(
+          { opacity: 1 },
+          { duration: 0.15, ease: heroRevealEase },
+        ),
+      ]);
+      return;
+    }
+
+    void Promise.all([
+      navbarShellAnimationControls.start(
+        { transform: "scaleX(1)", opacity: 1 },
+        {
+          delay: navbarRevealLeadIn,
+          duration: navbarRevealDuration,
+          bounce: 0.08,
+          type: "spring",
+        },
+      ),
+      navbarContentAnimationControls.start("visible"),
+    ]);
+  }, [
+    navbarContentAnimationControls,
+    navbarRevealDuration,
+    navbarShellAnimationControls,
+    shouldPlayHeroEntrance,
+    shouldReduceInitialMotion,
+    usesMobileNavbarLayout,
+  ]);
 
   useEffect(() => {
     const updateActiveSection = () => {
@@ -157,6 +249,23 @@ export default function PortfolioSite() {
     setMenuOpen(false);
   };
 
+  const finishNavbarReveal = () => {
+    if (navbarRevealCompleteRef.current) return;
+
+    navbarRevealCompleteRef.current = true;
+    navbarShellAnimationControls.stop();
+    navbarContentAnimationControls.stop();
+    navbarShellAnimationControls.set({
+      transform: "scaleX(1)",
+      opacity: 1,
+    });
+    navbarContentAnimationControls.set("visible");
+    if (navbarShellRef.current) {
+      navbarShellRef.current.style.transform = "none";
+      navbarShellRef.current.style.opacity = "1";
+    }
+  };
+
   const completeMobileNavigation = () => {
     const sectionId = pendingSectionRef.current;
     if (!sectionId) return;
@@ -177,70 +286,117 @@ export default function PortfolioSite() {
       <div className="mx-auto max-w-[1280px] px-8 max-[1120px]:px-6 max-[760px]:px-[18px] max-[480px]:px-[14px]">
         <header
           className={cn(
-            "border-portfolio-border-soft relative mt-4 mb-5 flex h-[76px] items-center justify-between rounded-[24px] border bg-white px-5 pl-7",
-            "max-[760px]:mt-3 max-[760px]:mb-4 max-[760px]:grid max-[760px]:h-auto max-[760px]:grid-cols-[1fr_auto] max-[760px]:px-3 max-[760px]:py-3 max-[760px]:pl-5",
-            menuOpen && "max-[760px]:shadow-portfolio-card",
+            "relative mt-4 mb-5 flex h-[76px] items-center justify-between rounded-[24px] border border-transparent px-5 pl-7",
+            "max-[760px]:mt-3 max-[760px]:mb-4 max-[760px]:block max-[760px]:h-auto max-[760px]:px-3 max-[760px]:py-3 max-[760px]:pl-5",
           )}
+          onFocusCapture={finishNavbarReveal}
+          onPointerDownCapture={finishNavbarReveal}
         >
-          <a
-            href="#home"
-            className="font-display text-[28px] font-bold tracking-[-2px]"
-            onClick={(event) => {
-              if (!menuOpen) return;
-              event.preventDefault();
-              closeMenuThenScroll("home");
-            }}
+          <motion.div
+            ref={navbarShellRef}
+            data-navbar-shell=""
+            aria-hidden="true"
+            className={cn(
+              "border-portfolio-border-soft bg-portfolio-surface pointer-events-none absolute inset-0 rounded-[24px] border will-change-transform",
+              menuOpen && "max-[760px]:shadow-portfolio-card",
+            )}
+            style={{ transformOrigin: "left center" }}
+            initial={
+              shouldPlayHeroEntrance
+                ? shouldReduceInitialMotion
+                  ? { opacity: 0 }
+                  : { transform: "scaleX(0.055)", opacity: 1 }
+                : false
+            }
+            animate={navbarShellAnimationControls}
+            onAnimationComplete={finishNavbarReveal}
+          />
+          <motion.div
+            data-navbar-reveal=""
+            className="relative z-10 flex w-full items-center justify-between max-[760px]:grid max-[760px]:grid-cols-[1fr_auto]"
+            variants={navbarContentVariants}
+            custom={navbarContentDelay}
+            initial={
+              shouldPlayHeroEntrance
+                ? shouldReduceInitialMotion
+                  ? { opacity: 0 }
+                  : "hidden"
+                : false
+            }
+            animate={navbarContentAnimationControls}
           >
-            RugeFX
-          </a>
-          <nav
-            aria-label="Main navigation"
-            className="hidden items-center gap-1 text-sm min-[760px]:flex"
-          >
-            {navigationItems.map(([label, id]) => {
-              const isActive = activeSection === id;
+            <motion.a
+              href="#home"
+              className="font-display text-[28px] font-bold tracking-[-2px]"
+              variants={navbarItemVariants}
+              onClick={(event) => {
+                if (!menuOpen) return;
+                event.preventDefault();
+                closeMenuThenScroll("home");
+              }}
+            >
+              RugeFX
+            </motion.a>
+            <motion.nav
+              aria-label="Main navigation"
+              className="hidden items-center gap-1 text-sm min-[760px]:flex"
+              variants={navbarItemVariants}
+            >
+              {navigationItems.map(([label, id]) => {
+                const isActive = activeSection === id;
 
-              return (
-                <a
-                  key={id}
-                  href={`#${id}`}
-                  aria-current={isActive ? "location" : undefined}
-                  className={cn(
-                    "rounded-full px-4 py-2.5 font-medium transition-colors duration-150",
-                    isActive
-                      ? "bg-portfolio-tint text-portfolio-brand"
-                      : "text-portfolio-ink hover:bg-portfolio-canvas",
-                  )}
-                >
-                  {label}
-                </a>
-              );
-            })}
-          </nav>
-          <LinkButton
-            size="sm"
-            className="h-10 gap-2.5 px-4 max-[760px]:hidden"
-            href="mailto:zackfxg@gmail.com"
-          >
-            Contact me
-            <ArrowUpRight
-              size={17}
-              data-icon="inline-end"
-              data-direction="diagonal"
-            />
-          </LinkButton>
-          <Button
-            variant="ghost"
-            size="icon"
-            ref={menuButtonRef}
-            className="text-portfolio-brand max-[760px]:bg-portfolio-tint max-[760px]:data-hovered:bg-portfolio-tint-active hidden max-[760px]:flex max-[760px]:size-12"
-            aria-label={menuOpen ? "Close navigation" : "Open navigation"}
-            aria-expanded={menuOpen}
-            aria-controls="mobile-navigation"
-            onPress={() => setMenuOpen(!menuOpen)}
-          >
-            {menuOpen ? <X /> : <Menu />}
-          </Button>
+                return (
+                  <a
+                    key={id}
+                    href={`#${id}`}
+                    aria-current={isActive ? "location" : undefined}
+                    className={cn(
+                      "rounded-full px-4 py-2.5 font-medium transition-colors duration-150",
+                      isActive
+                        ? "bg-portfolio-tint text-portfolio-brand"
+                        : "text-portfolio-ink hover:bg-portfolio-canvas",
+                    )}
+                  >
+                    {label}
+                  </a>
+                );
+              })}
+            </motion.nav>
+            <motion.div
+              className="max-[760px]:hidden"
+              variants={navbarItemVariants}
+            >
+              <LinkButton
+                size="sm"
+                className="h-10 gap-2.5 px-4"
+                href="mailto:zackfxg@gmail.com"
+              >
+                Contact me
+                <ArrowUpRight
+                  size={17}
+                  data-icon="inline-end"
+                  data-direction="diagonal"
+                />
+              </LinkButton>
+            </motion.div>
+            <motion.div
+              className="hidden max-[760px]:block"
+              variants={navbarItemVariants}
+            >
+              <Button
+                variant="ghost"
+                size="icon"
+                ref={menuButtonRef}
+                className="text-portfolio-brand bg-portfolio-tint data-hovered:bg-portfolio-tint-active size-12"
+                aria-label={menuOpen ? "Close navigation" : "Open navigation"}
+                aria-expanded={menuOpen}
+                aria-controls="mobile-navigation"
+                onPress={() => setMenuOpen(!menuOpen)}
+              >
+                {menuOpen ? <X /> : <Menu />}
+              </Button>
+            </motion.div>
+          </motion.div>
           <AnimatePresence
             initial={false}
             onExitComplete={completeMobileNavigation}
@@ -249,7 +405,7 @@ export default function PortfolioSite() {
               <motion.nav
                 id="mobile-navigation"
                 aria-label="Mobile navigation"
-                className="col-span-2 hidden overflow-hidden max-[760px]:block"
+                className="relative z-10 col-span-2 hidden overflow-hidden max-[760px]:block"
                 initial={
                   shouldReduceHeroMotion ? false : { height: 0, opacity: 0 }
                 }
@@ -326,22 +482,29 @@ export default function PortfolioSite() {
               className="grid scroll-mt-6 grid-cols-[1.15fr_1fr] gap-[22px] max-[1120px]:grid-cols-1 max-[760px]:gap-4"
               aria-label="Introduction"
               initial={
-                shouldPlayHeroEntrance && shouldReduceHeroMotion
+                shouldPlayHeroEntrance && shouldReduceInitialMotion
                   ? { opacity: 0 }
                   : false
               }
               animate={
-                shouldPlayHeroEntrance && shouldReduceHeroMotion
+                shouldPlayHeroEntrance && shouldReduceInitialMotion
                   ? { opacity: 1 }
                   : undefined
               }
-              transition={{ duration: 0.15, ease: heroRevealEase }}
+              transition={{
+                delay:
+                  shouldPlayHeroEntrance && shouldReduceInitialMotion
+                    ? 0.105
+                    : 0,
+                duration: 0.15,
+                ease: heroRevealEase,
+              }}
             >
               <div className="flex min-w-0 flex-col gap-5 max-[760px]:gap-4">
                 <motion.div
                   className={cn(
                     heroCardClass,
-                    "bg-portfolio-brand flex-1 p-12 text-white max-[1120px]:p-[clamp(36px,6vw,56px)] max-[760px]:px-[30px] max-[760px]:py-[34px] max-[480px]:px-6 max-[480px]:py-[30px] min-[1121px]:min-h-[540px]",
+                    "bg-portfolio-brand relative flex-1 p-12 text-white max-[1120px]:p-[clamp(36px,6vw,56px)] max-[760px]:px-[30px] max-[760px]:py-[34px] max-[480px]:px-6 max-[480px]:py-[30px] min-[1121px]:min-h-[540px]",
                   )}
                   data-hero-motion="main"
                   variants={heroCardVariants}
@@ -353,22 +516,21 @@ export default function PortfolioSite() {
                     duration: 0.52,
                   }}
                 >
+                  <ThemeToggle className="absolute top-6 right-6 z-30 max-[760px]:top-5 max-[760px]:right-5 max-[480px]:top-[18px] max-[480px]:right-[18px]" />
                   <motion.h1
-                    className="font-display mb-[35px] text-[clamp(65px,7.8vw,108px)] leading-[1.02] font-semibold tracking-[-7px] max-[1120px]:text-[clamp(76px,11vw,108px)] max-[1120px]:tracking-[-6px] max-[760px]:mb-[25px] max-[760px]:text-[clamp(66px,16vw,92px)] max-[760px]:tracking-[-4px] max-[480px]:text-[clamp(58px,18vw,78px)] max-[480px]:tracking-[-3px]"
+                    className="font-display mb-[35px] pr-[92px] text-[clamp(65px,7.8vw,108px)] leading-[1.02] font-semibold tracking-[-7px] max-[1120px]:text-[clamp(76px,11vw,108px)] max-[1120px]:tracking-[-6px] max-[760px]:mb-[25px] max-[760px]:pr-[84px] max-[760px]:text-[clamp(66px,16vw,92px)] max-[760px]:tracking-[-4px] max-[480px]:pr-[76px] max-[480px]:text-[clamp(58px,18vw,78px)] max-[480px]:tracking-[-3px]"
                     variants={heroTextVariants}
                     initial={heroCardInitial}
                     animate="visible"
-                    custom={0.08}
+                    custom={heroDelayOffset + 0.08}
                   >
-                    Ahmad
-                    <br />
-                    Zacky<span>.</span>
+                    <HeroName />
                   </motion.h1>
                   <motion.div
                     variants={heroTextVariants}
                     initial={heroCardInitial}
                     animate="visible"
-                    custom={0.15}
+                    custom={heroDelayOffset + 0.15}
                   >
                     <h2 className="mb-6 text-[26px] font-medium tracking-[-1px] max-[760px]:text-2xl">
                       Software engineer
@@ -381,7 +543,7 @@ export default function PortfolioSite() {
                       <LinkButton
                         variant="inverse"
                         size="lg"
-                        className="max-[1120px]:h-12 max-[1120px]:px-[18px] max-[480px]:w-full"
+                        className="text-portfolio-ink-strong max-[1120px]:h-12 max-[1120px]:px-[18px] max-[480px]:w-full"
                         href="mailto:zackfxg@gmail.com"
                       >
                         Get in touch
@@ -477,7 +639,7 @@ export default function PortfolioSite() {
                     <a
                       className={cn(
                         socialCardClass,
-                        "border-portfolio-border text-portfolio-ink border bg-white max-[760px]:min-h-[140px]",
+                        "border-portfolio-border bg-portfolio-surface text-portfolio-ink border max-[760px]:min-h-[140px]",
                       )}
                       href="https://twitter.com/RugeDev"
                       target="_blank"
@@ -497,7 +659,7 @@ export default function PortfolioSite() {
               </div>
               <div className="flex min-w-0 flex-col gap-5 max-[760px]:gap-4">
                 <motion.div
-                  className="border-portfolio-border-soft flex-1 rounded-[25px] border bg-white p-11 max-[1120px]:p-[clamp(34px,5vw,52px)] max-[760px]:p-[30px]"
+                  className="border-portfolio-border-soft bg-portfolio-surface flex-1 rounded-[25px] border p-11 max-[1120px]:p-[clamp(34px,5vw,52px)] max-[760px]:p-[30px]"
                   data-hero-motion="about"
                   variants={heroCardVariants}
                   initial={heroCardInitial}
@@ -663,13 +825,61 @@ export default function PortfolioSite() {
   );
 }
 
+function HeroName() {
+  const { theme } = useTheme();
+  const shouldReduceMotion = useReducedMotion();
+  const isDark = theme === "dark";
+  const words = ["Ahmad", "Zacky."];
+  const extrusionTransition = shouldReduceMotion
+    ? {
+        x: { duration: 0 },
+        y: { duration: 0 },
+        opacity: { duration: 0.15, ease: "easeOut" as const },
+      }
+    : {
+        x: { type: "spring" as const, duration: 0.44, bounce: 0.16 },
+        y: { type: "spring" as const, duration: 0.44, bounce: 0.16 },
+        opacity: { duration: 0.16, ease: "easeOut" as const },
+      };
+
+  return words.map((word) => (
+    <span className="relative isolate block w-fit" key={word}>
+      <motion.span
+        aria-hidden="true"
+        className="text-portfolio-hero-name-extrusion pointer-events-none absolute inset-0 -z-10 block"
+        animate={{
+          x: shouldReduceMotion ? (isDark ? 0 : 5) : isDark ? 0 : 5,
+          y: shouldReduceMotion ? (isDark ? 0 : -5) : isDark ? 0 : -5,
+          opacity: isDark ? 0 : 0.7,
+        }}
+        initial={false}
+        transition={extrusionTransition}
+      >
+        {word}
+      </motion.span>
+      <span className="text-portfolio-hero-name-face relative z-10 block transition-colors duration-200">
+        {word}
+      </span>
+      <motion.span
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 z-20 block text-transparent [-webkit-text-stroke:2px_var(--color-portfolio-hero-name-outline)] [paint-order:stroke_fill] max-[480px]:[-webkit-text-stroke-width:1.5px]"
+        animate={{ opacity: isDark ? 1 : 0 }}
+        initial={false}
+        transition={{ duration: 0.16, ease: "easeOut" }}
+      >
+        {word}
+      </motion.span>
+    </span>
+  ));
+}
+
 function IndonesiaLocationMap() {
   const maskId = `indonesia-map-${useId().replace(/:/g, "")}`;
 
   return (
     <svg
       aria-hidden="true"
-      className="text-portfolio-brand absolute inset-x-[-10px] bottom-[-6px] h-[132px] w-[calc(100%+20px)] overflow-visible"
+      className="text-portfolio-map-marker absolute inset-x-[-10px] bottom-[-6px] h-[132px] w-[calc(100%+20px)] overflow-visible"
       preserveAspectRatio="xMidYMid meet"
       viewBox="-2.65 150.83 1210.3 561.34"
     >
@@ -694,7 +904,7 @@ function IndonesiaLocationMap() {
       </defs>
 
       <rect
-        className="fill-current opacity-20"
+        className="text-portfolio-map-fill fill-current [opacity:var(--portfolio-map-opacity)]"
         x="-2.65"
         y="150.83"
         width="1210.3"
@@ -924,7 +1134,7 @@ function PreviewProject({ project, isBento }: PreviewProjectProps) {
   return (
     <Link
       className={cn(
-        "group border-portfolio-border-soft hover:border-portfolio-border-hover hover:shadow-portfolio-card flex min-w-0 flex-col overflow-hidden rounded-3xl border bg-white text-inherit transition-[transform,border-color,box-shadow] duration-250 ease-in-out hover:-translate-y-1",
+        "group border-portfolio-border-soft bg-portfolio-surface hover:border-portfolio-border-hover hover:shadow-portfolio-card flex min-w-0 flex-col overflow-hidden rounded-3xl border text-inherit transition-[transform,border-color,box-shadow] duration-250 ease-in-out hover:-translate-y-1",
         getProjectLayoutClass(project.slug, isBento),
       )}
       data-project={project.slug}

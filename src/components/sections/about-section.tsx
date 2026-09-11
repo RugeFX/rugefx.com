@@ -43,7 +43,7 @@ export default function AboutSection() {
       </h2>
 
       <div className="grid grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)] gap-5 max-[1120px]:grid-cols-2 max-[760px]:grid-cols-1 max-[760px]:gap-4">
-        <article className="border-portfolio-border row-span-2 flex min-h-[550px] flex-col rounded-[25px] border bg-white p-[clamp(30px,3.5vw,44px)] max-[1120px]:col-span-2 max-[1120px]:row-span-1 max-[1120px]:min-h-[500px] max-[760px]:col-span-1 max-[760px]:min-h-[520px] max-[760px]:p-[30px] max-[480px]:min-h-[540px] max-[480px]:px-6 max-[480px]:py-[26px]">
+        <article className="border-portfolio-border bg-portfolio-surface row-span-2 flex min-h-[550px] flex-col rounded-[25px] border p-[clamp(30px,3.5vw,44px)] max-[1120px]:col-span-2 max-[1120px]:row-span-1 max-[1120px]:min-h-[500px] max-[760px]:col-span-1 max-[760px]:min-h-[520px] max-[760px]:p-[30px] max-[480px]:min-h-[540px] max-[480px]:px-6 max-[480px]:py-[26px]">
           <Code2
             className="border-portfolio-brand text-portfolio-brand-strong h-[42px] w-[42px] shrink-0 rounded-[9px] border-2 [stroke-width:1.8] p-[7px]"
             aria-hidden="true"
@@ -111,7 +111,7 @@ export default function AboutSection() {
         </article>
       </div>
 
-      <div className="border-portfolio-border mt-5 rounded-[25px] border bg-white px-9 pt-7 pb-[30px] max-[760px]:mt-4 max-[760px]:px-[30px] max-[760px]:py-[27px] max-[480px]:p-6">
+      <div className="border-portfolio-border bg-portfolio-surface mt-5 rounded-[25px] border px-9 pt-7 pb-[30px] max-[760px]:mt-4 max-[760px]:px-[30px] max-[760px]:py-[27px] max-[480px]:p-6">
         <div className="mb-[19px] flex items-center justify-between gap-6 max-[480px]:flex-col max-[480px]:items-start max-[480px]:gap-2.5">
           <h3 className="font-display text-[25px] font-semibold tracking-[-0.8px]">
             Tools I work with

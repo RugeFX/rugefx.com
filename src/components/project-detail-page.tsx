@@ -86,7 +86,7 @@ export default function ProjectDetailPage({
             </div>
           )}
 
-          <div className="border-portfolio-border-soft col-span-full grid grid-cols-[0.65fr_1.35fr] gap-[50px] overflow-hidden rounded-[25px] border bg-white p-11 max-[900px]:grid-cols-1 max-[900px]:gap-5 max-[520px]:px-6 max-[520px]:py-[30px]">
+          <div className="border-portfolio-border-soft bg-portfolio-surface col-span-full grid grid-cols-[0.65fr_1.35fr] gap-[50px] overflow-hidden rounded-[25px] border p-11 max-[900px]:grid-cols-1 max-[900px]:gap-5 max-[520px]:px-6 max-[520px]:py-[30px]">
             <h2 className="font-display text-[28px] font-semibold tracking-[-1px]">
               About the project
             </h2>

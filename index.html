@@ -5,6 +5,28 @@
     <link rel="icon" type="image/svg+xml" href="/icon.svg" />
     <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f8f7fb" />
+    <script>
+      (() => {
+        try {
+          const storedTheme = localStorage.getItem("rugefx-theme");
+          const theme =
+            storedTheme === "light" || storedTheme === "dark"
+              ? storedTheme
+              : matchMedia("(prefers-color-scheme: dark)").matches
+                ? "dark"
+                : "light";
+
+          document.documentElement.dataset.theme = theme;
+          document.documentElement.style.colorScheme = theme;
+          document
+            .querySelector('meta[name="theme-color"]')
+            ?.setAttribute("content", theme === "dark" ? "#120c1a" : "#f8f7fb");
+        } catch {
+          document.documentElement.dataset.theme = "light";
+        }
+      })();
+    </script>
 
     <meta name="title" content="Ahmad Zacky - Personal Website" />
     <meta

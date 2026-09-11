@@ -9,6 +9,7 @@ layer(base);
   --font-display: Space Grotesk, sans-serif;
 
   --color-portfolio-canvas: #f8f7fb;
+  --color-portfolio-surface: #ffffff;
   --color-portfolio-ink: #21172f;
   --color-portfolio-ink-strong: #21142f;
   --color-portfolio-brand: #7c3aed;
@@ -35,6 +36,17 @@ layer(base);
   --color-portfolio-on-dark-accent: #d3b4ff;
   --color-portfolio-focus: #a78bfa;
   --color-portfolio-map-shadow: #bda4e5;
+  --color-portfolio-map-fill: #7c3aed;
+  --color-portfolio-map-marker: #7c3aed;
+  --color-portfolio-hero-name-face: #ffffff;
+  --color-portfolio-hero-name-extrusion: #4c1d95;
+  --color-portfolio-hero-name-outline: #e6d6ff;
+  --color-portfolio-theme-toggle: rgb(255 255 255 / 16%);
+  --color-portfolio-theme-toggle-hover: rgb(255 255 255 / 24%);
+  --color-portfolio-theme-toggle-border: rgb(255 255 255 / 46%);
+  --color-portfolio-theme-toggle-thumb: #ffffff;
+  --color-portfolio-theme-toggle-icon-active: #431879;
+  --color-portfolio-theme-toggle-icon-inactive: #ffffff;
   --color-portfolio-stack-border: #d9cce6;
   --color-portfolio-stack-line: rgb(91 63 117 / 18%);
   --color-portfolio-stack-line-strong: rgb(91 63 117 / 22%);
@@ -179,7 +191,72 @@ layer(base);
     --input: 220 13% 91%;
     --ring: 262.1 83.3% 57.8%;
     --radius: 0.75rem;
+    --portfolio-map-opacity: 0.2;
   }
+}
+
+:root[data-theme="dark"] {
+  --color-portfolio-canvas: #120c1a;
+  --color-portfolio-surface: #1b1326;
+  --color-portfolio-ink: #f7f2ff;
+  --color-portfolio-ink-strong: #0c0713;
+  --color-portfolio-brand: #6423c9;
+  --color-portfolio-brand-strong: #a978ff;
+  --color-portfolio-brand-deep: #c4a4ff;
+  --color-portfolio-tint: #2a1b3c;
+  --color-portfolio-tint-soft: #251833;
+  --color-portfolio-tint-active: #332247;
+  --color-portfolio-media: #18201a;
+  --color-portfolio-border-soft: #2d2239;
+  --color-portfolio-border: #392a49;
+  --color-portfolio-divider: #49375c;
+  --color-portfolio-divider-strong: #58416f;
+  --color-portfolio-border-hover: #76539b;
+  --color-portfolio-brand-outline: #a97df0;
+  --color-portfolio-copy: #dcd2e6;
+  --color-portfolio-copy-muted: #b9abc6;
+  --color-portfolio-copy-subtle: #aa99b8;
+  --color-portfolio-separator: #806f8f;
+  --color-portfolio-on-brand: #f2eaff;
+  --color-portfolio-on-brand-muted: #dfcefa;
+  --color-portfolio-on-dark: #f7f2ff;
+  --color-portfolio-on-dark-muted: #cdbde0;
+  --color-portfolio-on-dark-accent: #cda9ff;
+  --color-portfolio-focus: #c4a4ff;
+  --color-portfolio-map-shadow: #432d5c;
+  --color-portfolio-map-fill: #c4a4ff;
+  --color-portfolio-map-marker: #c4a4ff;
+  --color-portfolio-hero-name-face: #21142f;
+  --color-portfolio-hero-name-extrusion: #d7c1ff;
+  --color-portfolio-hero-name-outline: #eee5ff;
+  --color-portfolio-theme-toggle: rgb(20 10 34 / 40%);
+  --color-portfolio-theme-toggle-hover: rgb(20 10 34 / 54%);
+  --color-portfolio-theme-toggle-border: rgb(235 221 255 / 42%);
+  --color-portfolio-theme-toggle-thumb: #eadcff;
+  --color-portfolio-theme-toggle-icon-active: #251334;
+  --color-portfolio-theme-toggle-icon-inactive: #d7c1ff;
+  --color-portfolio-stack-border: #40304f;
+  --color-portfolio-stack-line: rgb(235 221 255 / 15%);
+  --color-portfolio-stack-line-strong: rgb(235 221 255 / 20%);
+  --color-portfolio-footer-line: rgb(255 255 255 / 22%);
+  --shadow-portfolio-card: 0 18px 42px rgb(0 0 0 / 24%);
+  --shadow-portfolio-stack: 0 16px 38px rgb(0 0 0 / 22%);
+  --background: 270 37% 7%;
+  --foreground: 273 100% 97%;
+  --card: 273 33% 11%;
+  --card-foreground: 273 100% 97%;
+  --popover: 273 33% 11%;
+  --popover-foreground: 273 100% 97%;
+  --secondary: 273 28% 17%;
+  --secondary-foreground: 273 100% 97%;
+  --muted: 273 28% 17%;
+  --muted-foreground: 274 14% 69%;
+  --accent: 269 35% 20%;
+  --accent-foreground: 267 100% 88%;
+  --border: 273 20% 23%;
+  --input: 273 20% 23%;
+  --ring: 265 91% 76%;
+  --portfolio-map-opacity: 0.35;
 }
 
 @layer base {
@@ -187,11 +264,16 @@ layer(base);
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-portfolio-canvas text-foreground;
+  }
+  html,
+  body,
+  #root {
+    @apply bg-portfolio-canvas min-h-full transition-colors duration-200;
   }
   html,
   body {
-    @apply scroll-smooth;
+    @apply overscroll-y-none scroll-smooth;
   }
   @media (prefers-reduced-motion: reduce) {
     html,
